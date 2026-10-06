@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Danh sách khách hàng</title>
+    <link rel="stylesheet" href="/css/customer.css">
+    <link rel="stylesheet" href="/css/dashboard_qtv.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-left">
+        <div><a href="/qtv/trangchu"><img src="/images/logo.png" alt="Logo" class="logo-header" /></a></div>
+
+      </div>
+      <div class="user-info">
+        <div class="username">
+          <%= quanTriVien ? quanTriVien.name : 'Admin' %>
+          </div>
+          <a href="/logout" class="logout">Đăng xuất</a>
+        </div>
+    </header>
+
+    <div class="container">
+      <!-- ===== SIDEBAR ===== -->
+      <div class="sidebar">
+        <ul class="menu">
+          <li><a href="/quanlytaikhoan">Quản lý tài khoản khách hàng</a></li>
+          <li><a href="/quanlysanpham">Quản lý sản phẩm</a></li>
+          <li><a href="/quanlydonhang">Quản lý đơn hàng</a></li>
+          <li><a href="/xembaocao">Xem báo cáo</a></li>
+          <li><a href="/quanlykho">Quản lý kho</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="main-container">
+        <form action="/quanlytaikhoan" method="GET" class="table-header">
+            <h2>Danh Sách Khách Hàng</h2>
+            <div class="search-wrapper">
+                <input type="text" name="search" class="search-input" value="<%= search %>" placeholder="Nhập tên, email, sđt hoặc username">
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <select name="status" class="status-filter" onchange="this.form.submit()">
+                <option value="all" <%= status === 'all' ? 'selected' : '' %>>Tất cả trạng thái</option>
+                <option value="active" <%= status === 'active' ? 'selected' : '' %>>Hoạt động</option>
+                <option value="locked" <%= status === 'locked' ? 'selected' : '' %>>Đã khóa</option>
+            </select>
+        </form>
+
+        <div class="card">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>HỌ TÊN / USERNAME</th>
+                        <th>EMAIL</th>
+                        <th>SỐ ĐIỆN THOẠI</th>
+                        <th>TRẠNG THÁI</th>
+                        <th>HÀNH ĐỘNG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(data && data.length > 0) { %>
+                        <% data.forEach(u => { %>
+                        <tr>
+                            <td>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span style="font-weight: bold; color: #333;"><%= u.hoTen %></span>
+                                    <span style="font-size: 12px; color: #888;"><%= u.tenDangNhap %></span>
+                                </div>
+                            </td>
+
+                            <td><%= u.email %></td>
+
+                            <td><%= u.soDienThoai %></td>
+
+                            <td>
+                                <% if(u.trangThai == 'Hoạt động') { %>
+                                    <span class="badge active">Hoạt động</span>
+                                <% } else { %>
+                                    <span class="badge locked">Đã khóa</span>
+                                <% } %>
+                            </td>
+
+                            <td>
+                                <div class="dropdown">
+                                    <button class="dropbtn"><i class="fas fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-content">
+                                        <a href="/quanlytaikhoan/trangthai/<%= u.maKhachHang %>?page=<%= currentPage %>&search=<%= search %>&status=<%= status %>"
+                                            onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái tài khoản này?')">
+                                            Khóa/Mở khóa
+                                        </a>
+
+                                        <a href="/quanlytaikhoan/chitiettaikhoan/<%= u.maKhachHang %>">Xem chi tiết</a>
+
+                                        <a href="/quanlytaikhoan/xoa/<%= u.maKhachHang %>?page=<%= currentPage %>&search=<%= search %>&status=<%= status %>" class="text-red"
+                                            onclick="return confirm('Xóa tài khoản này? Tài khoản đã có đơn hàng sẽ được giữ lại để bảo toàn lịch sử.')">
+                                            Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="5" style="text-align:center; padding: 20px;">Chưa có dữ liệu khách hàng</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="/quanlytaikhoan?page=<%= currentPage - 1 %>&search=<%= search %>&status=<%= status %>">
+                        <button>Trước</button>
+                    </a>
+                <% } %>
+
+                <button class="active"><%= currentPage %></button>
+
+                <% if (currentPage < totalPages) { %>
+                    <a href="/quanlytaikhoan?page=<%= currentPage + 1 %>&search=<%= search %>&status=<%= status %>">
+                        <button>Sau</button>
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="/js/customer.js"></script> -->
+<script src="/js/customer-actions.js"></script>
+</body>
+</html>

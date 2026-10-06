@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sản phẩm theo danh mục</title>
+  <link rel="stylesheet" href="/css/dashboard_kh.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+
+
+  <header class="header">
+    <div class="logo"><a href="/kh/trangchu">
+        <h1>Lapzone</h1>
+      </a></div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get">
+          <i class="fa fa-search"></i>
+          <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+        <span style="color: white;">Giỏ hàng</span>
+      </a>
+
+      <div class="nguoidung">
+        <div class="user-box-click">
+          <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+          <span style="color: white;">
+            <%= khachHang ? khachHang.hoTen : "Đăng nhập" %>
+          </span>
+        </div>
+      </div>
+  </header>
+
+
+  <section class="danhmuc">
+    <p class="needs-title">Chọn theo nhu cầu</p>
+
+    <div class="needs-container">
+      <% danhMuc.forEach(function(dm, index) { %>
+        <div class="DM">
+          <a href="/product/category/<%= dm.maDanhMuc %>" class="thedanhmuc">
+            <div class="DM-box">
+             <div class="anhDM">
+                <img src="<%= dm.anhMinhHoaDM %>" alt="" />
+             </div>
+            </div>
+            <p class="tenDM"><%= dm.tenDanhMuc %></p>
+          </a>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <p class="title" style="padding-left: 15px;">Danh mục: <%= tenDanhMuc %></p>
+  <section class="trungbay" id="product-grid">
+    <% sanPham.forEach(function(sp, index) { %>
+    <div class="thesp">
+      <a href="/product/<%= sp.maSanPham %>" style="text-decoration: none;">
+        <div class="anhsp"><img src="<%= sp.anhMinhHoaSP %>" alt="" /></div>
+        <div class="ttsp">
+          <p class="ten"><%= sp.tenSanPham %></p>
+
+          <div class="price-box">
+            <p class="gia"><%= Number(sp.giaBan).toLocaleString('vi-VN') %>đ</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <% }); %>
+  </section>
+
+  <div class="view-more-wrap">
+    <button id="load-more-btn">
+      Xem thêm <span id="count-remaining"></span> sản phẩm <i class="fa fa-chevron-down"></i>
+    </button>
+  </div>
+
+  <footer style="background-color: rgb(242, 242, 242);">
+    <div class="footer-content">
+      <p>Công ty TNHH Thương Mại và Dịch Vụ Kỹ Thuật Lapzone - GPĐKKD: 0123456789 cấp tại Sở KH & ĐT TP. Hà Nội.</p>
+      <p>Địa chỉ văn phòng: 289 Đường Cầu Diễn, Tây Tựu, Hà Nội, Việt Nam. Điện thoại: 0987654321.</p>
+    </div>
+  </footer>
+</body>
+<script src="/js/dashboard_kh.js"></script>
+</html>

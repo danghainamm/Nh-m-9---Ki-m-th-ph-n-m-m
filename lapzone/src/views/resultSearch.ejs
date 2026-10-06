@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kết quả tìm kiếm</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/css/dashboard_kh.css" />
+  <link rel="stylesheet" href="/css/resultSearch.css" />
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo"><a href="/kh/trangchu">
+        <h1>Lapzone</h1>
+      </a></div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get">
+          <i class="fa fa-search"></i>
+          <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+        <span style="color: white;">Giỏ hàng</span>
+      </a>
+
+      <div class="nguoidung">
+        <div class="user-box-click">
+          <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+          <span style="color: white;">
+            <%= khachHang ? khachHang.hoTen : "Đăng nhập" %>
+          </span>
+        </div>
+      </div>
+  </header>
+
+  <div class="content">
+    <!-- MAIN CONTENT -->
+    <main class="maincontent">
+
+      <h2>Kết quả tìm kiếm cho: "<%= keyword %>"</h2>
+
+      <!-- SORTING -->
+      <div class="sort-box">
+        <h3 class="sort-title">Sắp xếp theo</h3>
+        <div class="sort-options">
+          <a href="/search/resultSearch?keyword=<%= keyword %>"
+            class="sort-btn <%= !filters.sort ? 'active' : '' %>">
+            Liên quan
+          </a>
+
+          <a href="/search/resultSearch?keyword=<%= keyword %>&sort=price_desc"
+            class="sort-btn <%= filters.sort === 'price_desc' ? 'active' : '' %>">
+            <i class="fa-solid fa-bars-staggered fa-rotate-180"></i> Giá cao
+          </a>
+
+          <a href="/search/resultSearch?keyword=<%= keyword %>&sort=price_asc"
+            class="sort-btn <%= filters.sort === 'price_asc' ? 'active' : '' %>">
+            <i class="fa-solid fa-bars-staggered"></i> Giá thấp
+          </a>
+        </div>
+      </div>
+
+      <% if (products.length > 0) { %>
+        <section class="trungbay" id="product-grid">
+          <% products.forEach(sp => { %>
+            <div class="thesp">
+              <a href="/product/<%= sp.maSanPham %>" style="text-decoration: none;">
+                <div class="anhsp"><img src="<%= sp.anhMinhHoaSP %>" alt="" /></div>
+                <div class="ttsp">
+                  <p class="ten"><%= sp.tenSanPham %></p>
+
+                  <div class="price-box">
+                    <p class="gia"><%= Number(sp.giaBan).toLocaleString('vi-VN') %>đ</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <% }) %>
+        </section>
+      <% } else { %>
+        <p class="not-exist-prd">Không có kết quả bạn cần tìm.</p>
+      <% } %>
+
+    </main>
+
+  </div>
+
+  <footer style="background-color: rgb(242, 242, 242);">
+    <div class="footer-content">
+      <p>Công ty TNHH Thương Mại và Dịch Vụ Kỹ Thuật Lapzone - GPĐKKD: 0123456789 cấp tại Sở KH & ĐT TP. Hà Nội.</p>
+      <p>Địa chỉ văn phòng: 289 Đường Cầu Diễn, Tây Tựu, Hà Nội, Việt Nam. Điện thoại: 0987654321.</p>
+    </div>
+  </footer>
+</body>
+<script src="/js/dashboard_kh.js"></script>
+</html>

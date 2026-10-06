@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng ký tài khoản</title>
+  <!-- Liên kết CSS riêng -->
+  <link rel="stylesheet" href="/css/register.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="header">
+    <h1>Đăng ký</h1>
+  </div>
+
+  <div class="register-container">
+    <% if (error) { %><p role="alert" style="color:#b00020"><%= error %></p><% } %>
+    <% if (success) { %><p role="status"><%= success %> <a href="/login">Đăng nhập</a></p><% } %>
+    <form id="registerForm" action="/register" method="post" class="login-form">
+      <h2>Thông tin cá nhân</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="hoTen">Họ và tên</label>
+          <input type="text" id="hoTen" name="hoTen" placeholder="Nhập họ và tên" required>
+        </div>
+        <div class="form-group">
+          <label for="tenDangNhap">Tên đăng nhập</label>
+          <input type="text" id="tenDangNhap" name="tenDangNhap" placeholder="Tên tài khoản" required>
+          <span id="username-error" class="error-text" style="color: red; font-size: 13px;"></span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="soDienThoai">Số điện thoại</label>
+          <input type="text" id="soDienThoai" name="soDienThoai" placeholder="Nhập số điện thoại" required>
+          <span id="phone-error" class="error-text" style="color: red; font-size: 13px;"></span>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Nhập email" required>
+          <span id="email-error" class="error-text" style="color: red; font-size: 13px;"></span>
+        </div>
+      </div>
+
+      <h2>Tạo mật khẩu</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="matKhau">Mật khẩu</label>
+          <input type="password" id="matKhau" name="matKhau" placeholder="Nhập mật khẩu" required>
+          <small class="hint-text"><i class="fas fa-info-circle"></i> Tối thiểu 8 ký tự; nên dùng chữ, số và ký tự đặc biệt</small>
+        </div>
+        <div class="form-group">
+          <label for="matKhau2">Nhập lại mật khẩu</label>
+          <input type="password" id="matKhau2" name="matKhau2" placeholder="Nhập lại mật khẩu" required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a href="/login" class="btn-back">Quay lại đăng nhập</a>
+        <button type="submit" id="btnSubmit" class="btn-submit-red">Hoàn tất đăng ký</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Nhận thông báo lỗi/thành công từ Server -->
+  <!-- <% if (error) { %>
+    <script>alert("<%= error %>");</script>
+  <% } %>
+
+  <% if (success) { %>
+    <script>
+      alert("<%= success %>");
+      window.location.href = "/login"; // Chuyển trang bằng JavaScript nếu bạn vẫn muốn dùng res.render
+    </script>
+  <% } %> -->
+  <!-- Liên kết JS riêng -->
+  <script src="/js/register.js"></script>
+</body>
+</html>

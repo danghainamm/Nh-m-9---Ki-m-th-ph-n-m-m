@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt hàng</title>
+  <link rel="stylesheet" href="/css/order.css" />
+  <script>
+    window.giaBanSanPham = <%- JSON.stringify(product.giaBan) %>;
+    window.maSanPham = <%- JSON.stringify(product.maSanPham) %>;
+    window.soLuongTon = <%- JSON.stringify(product.soLuongTon) %>;
+    window.khachHang = <%- JSON.stringify(khachHang || {}).replace(/</g, "\\u003c") %>;
+  </script>
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="order-container">
+    <form class="order-form" id="orderForm" action="/order/dat-hang" method="POST">
+      <input type="hidden" name="maSanPham" value="<%= product.maSanPham %>">
+      <input type="hidden" name="tenSanPham" value="<%= product.tenSanPham %>">
+      <input type="hidden" id="hiddenSoLuong" name="soLuong" value="1">
+      <input type="hidden" id="hiddenTongGiaTri" name="tongGiaTri" value="<%= product.giaBan %>">
+
+      <div class="buyer-info">
+        <h3>THÔNG TIN NGƯỜI NHẬN</h3>
+        <div class="account-selector-wrapper">
+          <input type="checkbox" id="useAccountInfo" name="useAccountInfo" checked style="display:none">
+          <div id="accountSelector" class="account-selector" role="radio" tabindex="0" aria-checked="true">
+            <div class="select-dot" aria-hidden="true"><span class="dot"></span></div>
+            <div class="account-info">
+              <div class="account-name"><%= khachHang ? (khachHang.hoTen || khachHang.name || khachHang.id) : 'Tài khoản' %></div>
+              <div class="account-meta">SĐT: <%= khachHang ? (khachHang.soDienThoai || '—') : '—' %></div>
+            </div>
+          </div>
+
+          <!-- Hidden select for saved addresses (kept for JS but hidden from UI) -->
+          <div style="display:none;">
+            <select id="selectDiaChi">
+              <% if (diaChiList && diaChiList.length) { %>
+                <% diaChiList.forEach(function(dc, idx){ %>
+                  <option value="<%= dc.maDiaChi %>" data-hoten="<%= dc.hoTenNguoiNhan %>" data-sdt="<%= dc.soDienThoaiNguoiNhan %>" data-diachi="<%= dc.diaChiNhanHang %>" <%= dc.laMacDinh ? 'selected' : '' %>><%= dc.diaChiNhanHang %> — <%= dc.hoTenNguoiNhan %> — <%= dc.soDienThoaiNguoiNhan %></option>
+                <% }) %>
+              <% } else { %>
+                <option value="">Không có địa chỉ lưu</option>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Hidden input để gửi maDiaChiChon -->
+          <input type="hidden" id="maDiaChiChon" name="maDiaChiChon" value="">
+        </div>
+        <label>
+          Họ tên<span class="required">*</span>
+          <input type="text" id="hoTenNguoiNhan" name="hoTenNguoiNhan" required value="<%= khachHang.hoTen %>">
+        </label>
+        <label>
+          SĐT<span class="required">*</span>
+          <input type="text" id="soDienThoaiNguoiNhan" name="soDienThoaiNguoiNhan" required value="<%= khachHang.soDienThoai %>">
+        </label>
+        <label>
+          Địa chỉ<span class="required">*</span>
+          <input type="text" id="diaChiNhanHang" name="diaChiNhanHang" required value="<%= khachHang.diaChi || '' %>">
+        </label>
+        <label>
+          Ghi chú
+          <textarea name="ghiChu"></textarea>
+        </label>
+      </div>
+
+      <div class="payment-info">
+        <h3>PHƯƠNG THỨC THANH TOÁN</h3>
+        <label>
+          <input type="radio" name="phuongThuc" value="Ngân hàng" required>
+          Thanh toán bằng tài khoản ngân hàng
+        </label>
+        <label>
+          <input type="radio" name="phuongThuc" value="Nhận hàng">
+          Thanh toán khi nhận hàng
+        </label>
+        <label>
+          <input type="radio" name="phuongThuc" value="Tại cửa hàng">
+          Thanh toán tại cửa hàng
+        </label>
+
+        <h4>XÁC NHẬN ĐƠN HÀNG</h4>
+        <div class="order-summary">
+          <div class="item-row">
+            <span class="product-name"><%= product.tenSanPham %></span>
+            <span class="product-price"><%= Number(product.giaBan).toLocaleString('vi-VN') %> VND</span>
+            <div class="quantity-control-inline">
+              <button type="button" id="qtyDecrease" class="qty-btn-inline" onclick="changeQuantity(-1)">−</button>
+              <input type="number" id="quantity" value="1" min="1" max="<%= product.soLuongTon %>" readonly size="5px">
+              <button type="button" id="qtyIncrease" class="qty-btn-inline" onclick="changeQuantity(1)">+</button>
+            </div>
+            <small id="stockInfo" style="margin-left:10px;color:#666">Tồn: <%= product.soLuongTon %></small>
+          </div>
+          <div class="total-row">
+            <span>Tổng tiền:</span>
+            <strong id="tongTien"><%= product.giaBan.toLocaleString() %> VND</strong>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">Xác nhận đơn hàng</button>
+        <button type="button" class="back-btn" onclick="history.back()">Quay lại</button>
+      </div>
+    </form>
+    <script src="/js/payment.js"></script>
+</body>
+</html>

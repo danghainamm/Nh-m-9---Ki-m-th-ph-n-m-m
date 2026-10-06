@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin cá nhân</title>
+
+    <link rel="stylesheet" href="/css/dashboard_kh.css" />
+
+    <link rel="stylesheet" href="/css/profile.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <a href="/kh/trangchu">
+                <h1>Lapzone</h1>
+            </a>
+        </div>
+
+        <div class="tk">
+            <form action="/search/resultSearch" method="get">
+            <i class="fa fa-search"></i>
+            <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+            </form>
+        </div>
+
+        <a href="/cart" class="header-cart-link">
+            <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+            <span style="color: white;">Giỏ hàng</span>
+        </a>
+
+        <div class="nguoidung">
+            <div class="user-box-click">
+            <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+            <span style="color: white;">
+                <%= user ? user.hoTen : "Đăng nhập" %>
+            </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-wrapper" style="margin-top: 80px;">
+
+        <div class="sidebar">
+            <div class="user-badge">
+                <div class="user-avatar">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span style="font-size: 13px; color: #888;">Tài khoản của</span><br>
+                    <strong><%= user.hoTen %></strong>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a>
+                </li>
+                <li>
+
+                    <a href="/order/my-orders"><i class="fa fa-shopping-bag"></i> Quản lý đơn hàng</a>
+                </li>
+                <li>
+                    <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="lpz-block">
+
+                <div class="lpz-header">
+                    <h2 class="lpz-title">Thông tin cá nhân</h2>
+                    <button type="button" class="lpz-btn-update" style="border: none; background-color: white; cursor: pointer;">
+                        <i class="fa-solid fa-pen-to-square"></i> Cập nhật
+                    </button>
+                </div>
+
+                <div class="lpz-body">
+
+                    <div class="lpz-row">
+                        <div class="lpz-col">
+                            <span class="lpz-label">Họ và tên:</span>
+                            <span class="lpz-value"><%= user.hoTen %></span>
+                        </div>
+                        <div class="lpz-col">
+                            <span class="lpz-label">Số điện thoại:</span>
+                            <span class="lpz-value"><%= user.soDienThoai %></span>
+                        </div>
+                    </div>
+
+                    <div class="lpz-row no-border">
+                        <div class="lpz-col">
+                            <span class="lpz-label">Email:</span>
+                            <span class="lpz-value"><%= user.email %></span>
+                        </div>
+                        <div class="lpz-col">
+                            <span class="lpz-label">Địa chỉ mặc định:</span>
+                            <span class="lpz-value lpz-address">
+                                <%= (user.diaChiNhanHang && user.diaChiNhanHang !== 'null') ? user.diaChiNhanHang : 'Chưa thiết lập' %>
+                            </span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <%# sổ địa chỉ? %>
+
+            <div class="lpz-block" style="margin-top: 20px;">
+
+                <div class="lpz-header-small">
+                    <h3 class="lpz-title-small">Mật khẩu</h3>
+                    <a href="/kh/doimatkhau" class="lpz-btn-text-red">
+                        <i class="fa-solid fa-pen-to-square"></i> Thay đổi mật khẩu
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modal-update-profile" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Cập nhật thông tin cá nhân</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+
+                <form action="/profile/update" method="POST" class="modal-form" novalidate>
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" name="hoTen" class="lpz-input disable-input" value="<%= user.hoTen %>" required>
+                        <span class="error-message" id="error-hoTen"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" name="soDienThoai" class="lpz-input" value="<%= user.soDienThoai %>" required>
+                        <span class="error-message" id="error-soDienThoai"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" name="email" class="lpz-input" value="<%= user.email %>" required>
+                        <span class="error-message" id="error-email"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Địa chỉ mặc đinh<span style="color: red">*</span></label>
+                        <input type="text" name="diaChiNhanHang" class="lpz-input" value="<%= (user.diaChiNhanHang && user.diaChiNhanHang !== 'null') ? user.diaChiNhanHang : '' %>" placeholder="Nhập địa chỉ nhận hàng...">
+                        <span class="error-message" id="error-diaChi"></span>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" id="btn-reset-profile">Thiết lập lại</button>
+                        <button type="submit" class="btn-submit">Cập nhật thông tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/profile.js"></script>
+    <script src="/js/dashboard_kh.js"></script>
+
+</body>
+</html>

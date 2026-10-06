@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thanh toán đơn hàng - Lapzone</title><link rel="stylesheet" href="/css/payment.css">
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+<div class="payment-container"><div class="payment-card">
+  <div class="payment-header"><h1>Thanh toán đơn hàng</h1><p class="order-code">Mã đơn: <strong><%= order.maDonHang %></strong></p></div>
+  <div class="payment-body">
+    <div class="order-info"><div class="info-row"><span>Tổng tiền:</span><strong class="total-amount"><%= Number(order.tongGiaTri).toLocaleString('vi-VN') %>đ</strong></div></div>
+    <div class="qr-section"><h3>Chế độ chạy thử</h3><p>Cửa hàng chưa cấu hình tài khoản ngân hàng và mã QR. Bạn có thể gửi yêu cầu xác nhận để thử luồng xử lý đơn; không cần chuyển tiền.</p></div>
+    <p id="paymentMessage" role="status"><%= order.phuongThucThanhToan %></p>
+    <div class="action-buttons">
+      <button class="btn-confirm" id="confirmPayment" <%= order.phuongThucThanhToan.startsWith('Đã thanh toán') ? 'disabled' : '' %>>Gửi yêu cầu xác nhận</button>
+      <button class="btn-back" onclick="location.href='/order/my-orders'">Đơn hàng của tôi</button>
+    </div>
+  </div>
+</div></div>
+<script>
+  document.getElementById('confirmPayment').addEventListener('click', async function () {
+    this.disabled = true;
+    const message = document.getElementById('paymentMessage');
+    try {
+      const response = await fetch('/payment/verify-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ maDonHang: <%- JSON.stringify(order.maDonHang).replace(/</g, '\\u003c') %> }) });
+      const result = await response.json();
+      message.textContent = result.message;
+      if (!result.success) this.disabled = false;
+    } catch { message.textContent = 'Không thể kết nối. Vui lòng thử lại.'; this.disabled = false; }
+  });
+</script>
+</body></html>

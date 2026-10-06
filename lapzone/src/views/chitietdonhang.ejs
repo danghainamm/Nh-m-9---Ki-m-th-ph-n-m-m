@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>Chi tiết đơn hàng</title>
+  <link rel="stylesheet" href="/css/order_detail.css" />
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+<div class="order-detail-container">
+  <div class="header">
+    <h1>Chi tiết đơn hàng</h1>
+        <% if (typeof quanTriVien !== 'undefined' && quanTriVien) { %>
+      <a href="/quanlydonhang" class="btn-back">← Quay lại</a>
+    <% } else { %>
+      <a href="/order/my-orders" class="btn-back">← Quay lại</a>
+    <% } %>
+  </div>
+
+  <div class="order-info">
+    <p><strong>Mã đơn hàng:</strong> <%= order.maDonHang %></p>
+    <p><strong>Khách hàng:</strong> <%= order.tenKhachHang %> <small>(<%= order.soDienThoai || '-' %>)</small></p>
+    <hr />
+    <p><strong>Người nhận:</strong> <%= order.tenNguoiNhan || order.tenKhachHang %></p>
+    <p><strong>SĐT người nhận:</strong> <%= order.sdtNguoiNhan || order.soDienThoai || '-' %></p>
+    <p><strong>Địa chỉ nhận:</strong> <%= order.diaChi || '-' %></p>
+    <hr />
+    <p><strong>Ngày tạo:</strong> <%= new Date(order.ngayDatHang).toLocaleDateString('vi-VN') %></p>
+    <p style="white-space: pre-line"><strong>Ghi chú:</strong> <%= order.ghiChu || '—' %></p>
+  </div>
+
+  <h2>Sản phẩm</h2>
+  <div class="product-list">
+    <% if (orderDetails && orderDetails.length > 0) { %>
+      <% orderDetails.forEach(item => { %>
+        <div class="product-item">
+          <div><strong><%= item.tenSanPham %></strong></div>
+          <div>Số lượng: <%= item.soLuong %></div>
+          <div>Đơn giá:<%= Number(item.donGia).toLocaleString('vi-VN') %>đ</div>
+
+
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p>Không có sản phẩm.</p>
+    <% } %>
+  </div>
+
+
+</div>
+
+</body>
+</html>

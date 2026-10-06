@@ -1,0 +1,610 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  position: fixed;
+  background: #d70018;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+  gap: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo a{
+  text-decoration: none;
+}
+
+.logo h1 {
+  color: white;
+  font-weight: 900;
+  font-size: 36px;
+  margin: 0;
+  cursor: pointer;
+  font-style: italic;
+}
+
+.logo:hover h1 {
+  transform: scale(1.15);
+}
+
+.tk {
+  flex: 1;
+  max-width: 900px;
+  margin: 0 20px;
+}
+
+.tk form {
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+}
+
+.tk i { color: #666; margin-right: 10px; }
+
+.tk input { 
+  border: none !important; 
+  outline: none !important; 
+  width: 100%; 
+  height: 30px; 
+}
+
+.nguoidung{
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.header-cart-link, .nguoidung {
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 8px 15px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.header-cart-link:hover{
+  background-color: #e5051f;
+}
+
+.user-box-click {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nguoidung:hover{
+  background-color: #e5051f;
+}
+
+.list {
+  display: none;
+  opacity: 1; 
+  position: absolute;
+  background-color: white;
+  border: 1px solid grey;
+  list-style: none;
+  margin: 0;
+  top: 100%;
+  right: 0;
+  z-index: 100;
+  white-space: nowrap;
+  
+  width: 300px;
+  border-radius: 15px;
+  overflow: hidden; 
+}
+
+.list li {
+  list-style-type:none;
+  background-color: rgb(255, 255, 255);
+  margin: 10px;
+  
+}
+.list a:hover{
+  background-color: rgb(214, 214, 214);
+}
+
+.list li  a{
+  width: 100%;
+  height: 100%;
+  display: block;
+  box-sizing: border-box;
+  padding: 20px 40px; 
+  border-radius: 15px;
+}
+
+.danhmuc {
+  display: block;
+  background-color: white;
+  margin-top: 80px;
+  padding: 20px 10%;
+  height: auto;
+}
+
+.needs-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: left;
+}
+
+.needs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+.DM {
+  width: calc(100% / 7 - 15px);
+  min-width: 150px;
+  text-align: center;
+}
+
+.thedanhmuc {
+  display: block;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  background: none;
+  box-shadow: none; 
+  width: 100%;
+  height: auto;
+}
+
+.DM-box {
+  background-color: #f3f4f6;
+  border-radius: 15px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.anhDM {
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+.anhDM img {
+  width: 90%;
+  height: auto;
+  object-fit: contain;
+}
+
+.tenDM {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.thedanhmuc:hover .DM-box {
+  background-color: #e5e7eb;
+  transform: translateY(-3px);
+}
+
+.trungbay {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  padding: 20px 10%;
+}
+
+.thesp {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.thesp:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.anhsp img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+}
+
+.ttsp { 
+  padding-top: 15px; 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.ten {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px; 
+  font-weight: 600;
+  color: #333;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  height: 42px; 
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.price-box {
+  display: flex;
+  align-items: baseline; 
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.gia { 
+  color: #d70018; 
+  font-size: 16px; 
+  font-weight: 800; 
+  margin: 0; 
+}
+
+.gia-cu { 
+  color: #707070; 
+  text-decoration: line-through; 
+  font-size: 13px; 
+  margin: 0; 
+}
+
+.view-more-wrap { text-align: center; margin: 40px 0; }
+#load-more-btn {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 12px 60px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#load-more-btn:hover { background: #e5e7eb; }
+
+.title {
+  background: #d70018;
+  color: white;
+  padding: 20px 10%;
+  font-weight: bold;
+  margin: 40px 10% 20px 10%;
+  border-radius: 6px;
+}
+
+.ten{
+  text-decoration: none;
+  color: black;
+  font-weight: bolder;
+  margin: 0px 5px;
+}
+
+.footer {
+  background-color: #7a7878;
+  border-top: 1px solid #b1b1b1;
+  padding: 30px 0;
+  /* margin-top: 60px; */
+  width: 100%;
+  margin-top: auto;
+}
+
+.footer-content {
+  margin: 0 10%; 
+  text-align: center;
+}
+
+.footer-content p {
+  color: #555555;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+.footer-content p:first-child {
+  font-weight: 700;
+  color: #333333;
+  font-size: 14px;
+}
+
+.filter-section { 
+  padding: 20px 10%; 
+  background: #fff; 
+}
+
+.filter-title { 
+  font-size: 18px; 
+  font-weight: 700; 
+  margin-bottom: 15px; 
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid transparent;
+
+}
+
+.filter-item.main-filter {
+    border: 1px solid #d70018;
+    color: #d70018;
+    background: #fff;
+}
+
+/* Điều chỉnh Submenu đổ xuống từ nút ngang */
+.filter-item .submenu {
+    position: absolute;
+    top: 115%;
+    left: 0;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 20px;
+    width: 450px;
+    z-index: 1000;
+    display: none;
+}
+
+.filter-item.align-right .submenu {
+    left: auto;   
+    right: 0;     
+}
+
+.submenu{
+  cursor:default;
+}
+
+.submenu ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; /* Tự động xuống dòng */
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.submenu li {
+    padding: 8px 20px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px; /* Bo tròn cực đại thành viên thuốc */
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #333;
+}
+
+.submenu li:hover{
+  background-color: #e6e6e6;
+}
+
+.submenu li.selected {
+    background: #fff;
+    border: 1.5px solid #3b82f6; /* Viền xanh như ảnh */
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.submenu-btns {
+    display: flex;
+    gap: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.close-submenu {
+    flex: 1;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.close-submenu:hover{
+  background-color: #e6e6e6;
+}
+
+.apply-submenu {
+    flex: 2;
+    padding: 12px;
+    background: #cf828b;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    pointer-events: none;
+    /* cursor: not-allowed; */
+    transition: all 0.3s ease;
+    
+}
+
+.apply-submenu:hover{
+  background-color: #a8535d;
+}
+
+.apply-submenu.active {
+    background: #d70018;
+    pointer-events: auto; 
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(215, 0, 24, 0.3);
+}
+
+/* Các trạng thái Selected */
+.filter-item.parent.selected {
+    border: 1.5px solid #d70018;
+}
+.filter-item.parent.selected > span {
+    color: #d70018;
+    font-weight: bold;
+}
+
+
+/*xem theo giá*/
+.price-filter-box {
+    width: 400px !important;
+    padding: 25px !important;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.price-label {
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Khu vực ô nhập số */
+.price-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.price-field {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 10px 15px;
+    width: 45%;
+    background: #fff;
+}
+
+.price-field input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+    background: transparent;
+}
+
+.price-field span {
+    margin-left: 2px;
+    color: #333;
+    font-weight: 500;
+}
+
+.separator {
+    font-size: 20px;
+    color: #333;
+}
+
+/* Thanh kéo Slider */
+.slider-container {
+    height: 6px;
+    position: relative;
+    background: #eeeeee;
+    border-radius: 5px;
+    margin: 0 10px 45px 10px;
+}
+
+/* Dải màu đỏ ở giữa */
+.slider-track {
+    height: 100%;
+    position: absolute;
+    background: #d70018; /* Màu đỏ Lapzone */
+    border-radius: 5px;
+}
+
+.slider-container input[type="range"] {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    pointer-events: none; /* Cho phép click xuyên qua để kéo được cả 2 đầu */
+    -webkit-appearance: none;
+}
+
+/* Nút tròn kéo (Thumb) */
+input[type="range"]::-webkit-slider-thumb {
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    pointer-events: auto; /* Kích hoạt lại click cho nút tròn */
+    -webkit-appearance: none;
+    cursor: pointer;
+    border: 1px solid #f0f0f0;
+}
+
+/* Hỗ trợ cho Firefox */
+input[type="range"]::-moz-range-thumb {
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    pointer-events: auto;
+    cursor: pointer;
+    border: 1px solid #f0f0f0;
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/cart.css" />
+    <link rel="stylesheet" href="/css/dashboard_kh.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><a href="/kh/trangchu">
+        <h1>Lapzone</h1>
+      </a></div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get">
+          <i class="fa fa-search"></i>
+          <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+        <span style="color: white;">Giỏ hàng</span>
+      </a>
+
+      <div>
+        <% if (khachHang && khachHang.hoTen) { %>
+          <a href="/profile" class="user-box-click nguoidung" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+            <span style="color: white; font-weight: bold;">
+              <%= khachHang.hoTen %>
+            </span>
+          </a>
+        <% } else { %>
+          <a href="/login" class="user-box-click nguoidung" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+            <span style="color: white;">Đăng nhập</span>
+          </a>
+        <% } %>
+      </div>
+    </header>
+
+    <div class="cart-wrapper">
+        <div class="cart-header-nav">
+            <a href="javascript:history.back()"><i class="fa-solid fa-chevron-left"></i></a>
+            <h2>Giỏ hàng của bạn</h2>
+        </div>
+
+        <div class="cart-content">
+            <% if (cart && cart.length > 0) { %>
+                <div class="select-all-bar">
+                    <input type="checkbox" id="selectAll" style="cursor: pointer;">
+                    <label for="selectAll" style="color: rgb(88, 88, 88);">Chọn tất cả</label>
+                </div>
+
+                <% cart.forEach((item) => { %>
+                    <div class="cart-item-card">
+                        <div class="item-main">
+                            <input type="checkbox" style="cursor: pointer;" class="select-checkbox" name="selectedItems" value="<%= item.maSanPham %>" data-price="<%= item.DonGia %>" data-product='<%= JSON.stringify(item) %>'>
+                            <div class="item-img">
+                                <img src="<%= item.anhMinhHoaSP %>" alt="<%= item.tenSanPham %>">
+                            </div>
+                            <div class="item-info">
+                                <h3 class="item-name"><%= item.tenSanPham %></h3>
+                                <div class="price-row">
+                                    <span class="current-price"><%= (parseFloat(item.DonGia)).toLocaleString('vi-VN') %>đ</span>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <a href="/cart/remove?maSanPham=<%= item.maSanPham %>" class="btn-delete" onclick="return confirm('Xóa sản phẩm này?')">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </a>
+                                <div class="quantity-control">
+                                    <button class="qty-btn" onclick="updateQty(event, '<%= item.maSanPham %>', -1)">-</button>
+                                    <input type="number" value="<%= item.soLuong %>" readonly>
+                                    <button class="qty-btn" onclick="updateQty(event, '<%= item.maSanPham %>', 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="empty-cart">
+                    <p>Giỏ hàng của bạn đang trống.</p>
+                    <p>Hãy chọn thêm sản phẩm để mua sắm nhé</p>
+                    <a href="/kh/trangchu" class="btn-back">Quay lại trang chủ</a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <% if (cart && cart.length > 0) { %>
+        <div class="sticky-payment-bar">
+            <div class="payment-info">
+                <span>Tạm tính:</span>
+                <span id="totalPrice" class="total-price">0đ</span>
+            </div>
+            <button class="btn-buy-now" id="checkoutBtn" onclick="proceedToCheckout()" disabled>Mua ngay</button>
+        </div>
+    <% } %>
+
+    <script src="/js/cart.js"></script>
+    <script>
+        async function updateQty(event, id, change) {
+            const input = event.target.parentElement.querySelector('input');
+            const newQty = Number(input.value) + change;
+            if (newQty < 1) return;
+            try {
+              const response = await fetch('/cart/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ maSanPham: id, newQuantity: newQty }) });
+              const result = await response.json();
+              if (!result.success) return alert(result.message);
+              input.value = newQty; updateTotal();
+            } catch { alert('Không thể cập nhật giỏ hàng.'); }
+        }
+    </script>
+</body>
+</html>

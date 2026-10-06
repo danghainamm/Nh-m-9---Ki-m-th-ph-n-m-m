@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>
+        <%= (product && !locals.isCreateError) ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới' %>
+    </title>
+    <link rel="stylesheet" href="/css/dashboard_qtv.css">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #999;
+            color: white;
+        }
+    </style>
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div><a href="/qtv/trangchu"><img src="/images/logo.png" alt="Logo" class="logo-header" /></a></div>
+        </div>
+        <div class="user-info">
+            <div class="username">
+                <%= quanTriVien ? quanTriVien.hoTen : 'Admin' %>
+            </div>
+            <a href="/logout" class="logout">Đăng xuất</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <ul class="menu">
+                <li><a href="/quanlytaikhoan">Quản lý tài khoản khách hàng</a></li>
+                <li><a href="/quanlysanpham" class="active">Quản lý sản phẩm</a></li>
+                <li><a href="/quanlydonhang">Quản lý đơn hàng</a></li>
+                <li><a href="/xembaocao">Xem báo cáo</a></li>
+                <li><a href="/quanlykho">Quản lý kho</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content" style="margin-left: 250px; padding: 20px;">
+            <h1>
+                <%= (product && !locals.isCreateError) ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới' %>
+            </h1>
+
+            <div class="form-container">
+                <form action="<%= action %>" method="<%= method %>">
+                    <% if (typeof errorMessage !=='undefined' && errorMessage) { %>
+                        <div
+                            style="color: red; margin-bottom: 15px; padding: 10px; background-color: #fee; border: 1px solid #fcc; border-radius: 4px;">
+                            <%= errorMessage %>
+                        </div>
+                        <% } %>
+                            <% if (!product || locals.isCreateError) { %>
+                                <div class="form-group">
+                                    <label for="maSanPham">Mã sản phẩm *</label>
+                                    <input type="text" id="maSanPham" name="maSanPham"
+                                        value="<%= product ? product.maSanPham : '' %>" required>
+                                </div>
+                                <% } %>
+
+                                    <div class="form-group">
+                                        <label for="tenSanPham">Tên sản phẩm *</label>
+                                        <input type="text" id="tenSanPham" name="tenSanPham"
+                                            value="<%= product ? product.tenSanPham : '' %>" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="thuonghieu">Thương hiệu *</label>
+                                        <input type="text" id="thuonghieu" name="thuonghieu"
+                                            value="<%= product ? product.thuonghieu : '' %>" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="tinhTrang">Tình trạng *</label>
+                                        <select id="tinhTrang" name="tinhTrang" required>
+                                            <% if (product && !['Mới', 'Cũ', 'Refurbished'].includes(product.tinhTrang)) { %>
+                                                <option value="<%= product.tinhTrang %>" selected><%= product.tinhTrang %></option>
+                                            <% } %>
+                                            <option value="Mới" <%=product && product.tinhTrang==='Mới' ? 'selected'
+                                                : '' %>>Mới
+                                            </option>
+                                            <option value="Cũ" <%=product && product.tinhTrang==='Cũ' ? 'selected' : ''
+                                                %>>Cũ
+                                            </option>
+                                            <option value="Refurbished" <%=product && product.tinhTrang==='Refurbished'
+                                                ? 'selected' : '' %>>Refurbished</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="soLuongTon">Số lượng tồn *</label>
+                                        <input type="number" id="soLuongTon" name="soLuongTon"
+                                            value="<%= product ? product.soLuongTon : '' %>" required min="0">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="giaBan">Giá bán (VNĐ) *</label>
+                                        <input type="number" id="giaBan" name="giaBan"
+                                            value="<%= product ? product.giaBan : '' %>" required min="0">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="giaNhap">Giá nhập (VNĐ)</label>
+                                        <input type="number" id="giaNhap" name="giaNhap" min="0" value="<%= product ? Number(product.giaNhap || 0) : 0 %>">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="moTa">Mô tả</label>
+                                        <textarea id="moTa" name="moTa"><%= product ? product.moTa : '' %></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="anhMinhHoaSP">Ảnh minh họa (URL)</label>
+                                        <input type="text" id="anhMinhHoaSP" name="anhMinhHoaSP"
+                                            value="<%= product ? product.anhMinhHoaSP : '' %>">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="maDanhMuc">Danh mục *</label>
+                                        <select id="maDanhMuc" name="maDanhMuc" required>
+                                            <option value="">-- Chọn danh mục --</option>
+                                            <% if (typeof categories !=='undefined' && categories.length> 0) { %>
+                                                <% categories.forEach(cat=> { %>
+                                                    <option value="<%= cat.maDanhMuc %>" <%=product &&
+                                                        product.maDanhMuc===cat.maDanhMuc ? 'selected' : '' %>>
+                                                        <%= cat.tenDanhMuc %>
+                                                    </option>
+                                                    <% }); %>
+                                                        <% } %>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <h3>Thông số kỹ thuật</h3>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                            <div>
+                                                <label for="cpu">CPU</label>
+                                                <input type="text" id="cpu" name="cpu"
+                                                    value="<%= product ? product.cpu : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="ram">RAM</label>
+                                                <input type="text" id="ram" name="ram"
+                                                    value="<%= product ? product.ram : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="rom">ROM (Ổ cứng)</label>
+                                                <input type="text" id="rom" name="rom"
+                                                    value="<%= product ? product.rom : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="cardDH">Card đồ họa</label>
+                                                <input type="text" id="cardDH" name="cardDH"
+                                                    value="<%= product ? product.cardDH : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="kichThuocMH">Kích thước màn hình</label>
+                                                <input type="text" id="kichThuocMH" name="kichThuocMH"
+                                                    value="<%= product ? product.kichThuocMH : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="doPhanGiaiMH">Độ phân giải</label>
+                                                <input type="text" id="doPhanGiaiMH" name="doPhanGiaiMH"
+                                                    value="<%= product ? product.doPhanGiaiMH : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="congNgheMH">Công nghệ màn hình</label>
+                                                <input type="text" id="congNgheMH" name="congNgheMH"
+                                                    value="<%= product ? product.congNgheMH : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="pin">Pin</label>
+                                                <input type="text" id="pin" name="pin"
+                                                    value="<%= product ? product.pin : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="soKheRam">Số khe RAM</label>
+                                                <input type="text" id="soKheRam" name="soKheRam"
+                                                    value="<%= product ? product.soKheRam : '' %>">
+                                            </div>
+                                            <div>
+                                                <label for="hdh">Hệ điều hành</label>
+                                                <input type="text" id="hdh" name="hdh"
+                                                    value="<%= product ? product.hdh : '' %>">
+                                            </div>
+                                            <div style="grid-column: 1 / -1;">
+                                                <label for="port">Cổng kết nối</label>
+                                                <input type="text" id="port" name="port"
+                                                    value="<%= product ? product.port : '' %>">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">
+                                            <%= (product && !locals.isCreateError) ? 'Cập nhật' : 'Thêm mới' %>
+                                        </button>
+                                        <a href="/quanlysanpham" class="btn btn-secondary">Hủy</a>
+                                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

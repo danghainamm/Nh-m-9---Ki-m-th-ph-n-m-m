@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tạo đơn hàng</title>
+  <link rel="stylesheet" href="/css/create_order.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <main class="create-order-container">
+    <a href="/quanlydonhang" class="btn-back">← Quay lại</a>
+    <h1 class="create-order-title">Tạo đơn hàng</h1>
+    <form id="createOrderForm" action="/quanlydonhang/api/orders" method="POST">
+      <div class="form-group">
+        <label for="maKhachHang">Khách hàng</label>
+        <select id="maKhachHang" name="maKhachHang" required>
+          <option value="">Chọn khách hàng</option>
+          <% customers.forEach(customer => { %>
+            <option value="<%= customer.maKhachHang %>"><%= customer.hoTen %> (<%= customer.maKhachHang %>)</option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="maSanPham">Sản phẩm</label>
+        <select id="maSanPham" name="maSanPham" required>
+          <option value="">Chọn sản phẩm</option>
+          <% products.forEach(product => { %>
+            <option value="<%= product.maSanPham %>" data-price="<%= product.giaBan %>" data-stock="<%= product.soLuongTon %>"><%= product.tenSanPham %> — <%= Number(product.giaBan).toLocaleString('vi-VN') %>đ (tồn <%= product.soLuongTon %>)</option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group"><label for="soLuong">Số lượng</label><input id="soLuong" name="soLuong" type="number" min="1" step="1" value="1" required></div>
+      <div class="form-group"><label for="hoTenNguoiNhan">Họ tên người nhận</label><input id="hoTenNguoiNhan" name="hoTenNguoiNhan" maxlength="255" required></div>
+      <div class="form-group"><label for="soDienThoaiNguoiNhan">Số điện thoại người nhận</label><input id="soDienThoaiNguoiNhan" name="soDienThoaiNguoiNhan" type="tel" pattern="0[0-9]{9}" required></div>
+      <div class="form-group"><label for="diaChiNhanHang">Địa chỉ giao hàng</label><input id="diaChiNhanHang" name="diaChiNhanHang" maxlength="255" required></div>
+      <div class="form-group">
+        <label for="phuongThuc">Phương thức thanh toán</label>
+        <select id="phuongThuc" name="phuongThuc"><option value="Nhận hàng">Thanh toán khi nhận hàng</option><option value="Ngân hàng">Ngân hàng (demo)</option><option value="Tại cửa hàng">Tại cửa hàng</option></select>
+      </div>
+      <div class="form-group"><label for="ghiChu">Ghi chú</label><input id="ghiChu" name="ghiChu" maxlength="255"></div>
+      <p>Tổng tiền: <strong id="orderTotal">0đ</strong></p>
+      <p>Đơn mới ở trạng thái chờ xác nhận. Giá và tồn kho được kiểm tra khi tạo đơn.</p>
+      <p id="formMessage" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn-submit">Tạo đơn hàng</button>
+    </form>
+  </main>
+  <script src="/js/create_order.js"></script>
+</body>
+</html>

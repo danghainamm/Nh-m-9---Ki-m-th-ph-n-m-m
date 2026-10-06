@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý đơn hàng</title>
+    <link rel="stylesheet" href="/css/dashboard_qtv.css" />
+    <link rel="stylesheet" href="/css/order_management.css" />
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+  <body>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-left">
+        <div>
+          <a href="/qtv/trangchu"
+            ><img src="/images/logo.png" alt="Logo" class="logo-header"
+          /></a>
+        </div>
+      </div>
+      <div class="user-info">
+        <div class="username">
+          <%= quanTriVien ? quanTriVien.hoTen : 'Admin' %>
+        </div>
+        <a href="/logout" class="logout">Đăng xuất</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- ===== SIDEBAR ===== -->
+      <div class="sidebar">
+        <ul class="menu">
+          <li><a href="/quanlytaikhoan">Quản lý tài khoản khách hàng</a></li>
+          <li><a href="/quanlysanpham">Quản lý sản phẩm</a></li>
+          <li><a href="/quanlydonhang" class="active">Quản lý đơn hàng</a></li>
+          <li><a href="/xembaocao">Xem báo cáo</a></li>
+          <li><a href="/quanlykho">Quản lý kho</a></li>
+        </ul>
+      </div>
+
+      <!-- ===== MAIN CONTENT ===== -->
+      <div class="main-content">
+        <div class="sticky-header">
+          <h1 class="page-title">Danh sách đơn hàng</h1>
+
+          <!-- Tabs -->
+
+          <div class="tabs">
+            <button class="tab-btn active" data-status="all">
+              Tất cả đơn hàng
+            </button>
+            <button class="tab-btn" data-status="paid">Đã thanh toán</button>
+            <button class="tab-btn" data-status="unpaid">
+              Chưa thanh toán
+            </button>
+            <button class="tab-btn" data-status="processing">Đang xử lý</button>
+          </div>
+
+          <!-- Search and Filter -->
+          <div class="filter-section">
+            <div class="search-box">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Tìm kiếm theo mã đơn hàng hoặc tên khách hàng..."
+              />
+              <button class="search-btn" id="searchBtn">🔍</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Table -->
+        <div class="table-container">
+          <table class="order-table">
+            <thead>
+              <tr class="ten1">
+                <th>Mã đơn hàng</th>
+                <th>Ngày tạo</th>
+                <th>Khách hàng</th>
+                <th>Người nhận</th>
+                <th>Trạng thái</th>
+                <th>Thanh toán</th>
+                <th>Giao hàng</th>
+                <th>Tổng tiền</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="orderTableBody">
+              <% if (orders && orders.length > 0) { %> <%
+              orders.forEach(function(order) { %>
+              <tr>
+                <td>#<%= order.maDonHang %></td>
+                <td>
+                  <%= new Date(order.ngayTao).toLocaleDateString('vi-VN') %>
+                </td>
+                <td><%= order.tenKhachHang %></td>
+                <td>
+                  <div style="white-space:normal;">
+                    <%= order.tenNguoiNhan || order.tenKhachHang %><br>
+                  </div>
+                </td>
+                <td>
+                  <% if (order.trangThai === 'Đã xác nhận') { %>
+                  <span class="status-badge status-confirmed"
+                    ><%= order.trangThai %></span
+                  >
+                  <% } else if (order.trangThai === 'Chờ xử lý') { %>
+                  <span class="status-badge status-pending"
+                    ><%= order.trangThai %></span
+                  >
+                  <% } else if (order.trangThai === 'Đã hủy') { %>
+                  <span class="status-badge status-cancelled"
+                    ><%= order.trangThai %></span
+                  >
+                  <% } else { %>
+                  <span class="status-badge"><%= order.trangThai %></span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (order.trangThaiThanhToan === 'Đã thanh toán') { %>
+                  <span class="payment-badge payment-paid"
+                    ><%= order.trangThaiThanhToan %></span
+                  >
+                  <% } else if (order.trangThaiThanhToan === 'Chờ xử lý') { %>
+                  <span class="payment-badge payment-pending"
+                    ><%= order.trangThaiThanhToan %></span
+                  >
+                  <% } else { %>
+                  <span><%= order.trangThaiThanhToan || '-' %></span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (order.trangThaiGiaoHang === 'Đã giao') { %>
+                  <span class="delivery-badge delivery-done"
+                    ><%= order.trangThaiGiaoHang %></span
+                  >
+                  <% } else if (order.trangThaiGiaoHang === 'Chưa giao hàng') {
+                  %>
+                  <span class="delivery-badge delivery-pending"
+                    ><%= order.trangThaiGiaoHang %></span
+                  >
+                  <% } else { %>
+                  <span><%= order.trangThaiGiaoHang || '-' %></span>
+                  <% } %>
+                </td>
+                <td>
+                  <%= order.tongTien ? Number(order.tongTien).toLocaleString('vi-VN') +
+                  'đ' : '-' %>
+                </td>
+                <td>
+                  <button
+                    class="btn-action btn-view"
+                    onclick="viewOrder('<%= order.maDonHang %>')"
+                    title="Chi tiết"
+                  >
+                    👁️‍🗨️
+                  </button>
+                  <% if (order.trangThai !== 'Đã hủy') { %>
+                  <button
+                    class="btn-action btn-edit"
+                    onclick="editOrder('<%= order.maDonHang %>')"
+                    title="Chỉnh sửa"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-action btn-delete"
+                    onclick="deleteOrder('<%= order.maDonHang %>')"
+                    title="Hủy đơn hàng"
+                  >
+                    🗑️
+                  </button>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %> <% } else { %>
+              <tr>
+                <td colspan="9" style="text-align: center">
+                  Không có đơn hàng nào
+                </td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn-action-main btn-create" onclick="createOrder()">
+            Tạo đơn hàng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/order_management.js"></script>
+  </body>
+</html>

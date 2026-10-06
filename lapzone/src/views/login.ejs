@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đăng nhập</title>
+  <link rel="stylesheet" href="/css/login.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="login-wrapper">
+    <!-- Cột trái: Logo -->
+    <div class="login-left">
+      <a href="/kh/trangchu" style="text-decoration: none;"><h1>Lapzone</h1></a>
+    </div>
+
+    <!-- Cột phải: Form -->
+    <div class="login-right">
+      <form action="/login" method="post" class="login-form">
+        <h2>Đăng nhập</h2>
+
+        <div class="form-group">
+          <label for="tendangnhap">Tên đăng nhập</label>
+          <input type="text" id="tendangnhap" name="tendangnhap" placeholder="Tài khoản" required>
+        </div>
+
+        <div class="form-group">
+          <label for="matkhau">Mật khẩu</label>
+          <input type="password" id="matkhau" name="matkhau" placeholder="Mật khẩu" required>
+        </div>
+
+        <div class="form-group">
+          <label for="vt">Vai trò</label>
+          <select name="vt" id="vt">
+            <option value="kh">Khách hàng</option>
+            <option value="qtv">Quản trị viên</option>
+          </select>
+        </div>
+        <% if (error) { %>
+          <div class="error"><%= error %></div>
+        <% } %>
+
+        <button type="submit" class="btn-login">Đăng nhập</button>
+
+        <div class="form-links">
+
+          <p>Bạn chưa có tài khoản? <a href="/register">Đăng ký ngay</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

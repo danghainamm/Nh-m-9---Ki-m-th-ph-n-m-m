@@ -1,0 +1,60 @@
+html { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+img { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+button, a, input, select, textarea { outline-offset: 3px; }
+.cart-wrapper { width: min(650px, 100%); }
+.payment-card, .form-container { max-width: 100%; }
+.order-container { max-width: 100%; }
+body > header.header { flex-shrink: 0; }
+.trungbay { grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); }
+.needs-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+.needs-container .DM { width: 100%; min-width: 0; }
+.filter-tags { flex-wrap: wrap; }
+.submenu { max-width: calc(100vw - 32px); }
+.price-box { flex-wrap: wrap; }
+@media (max-width: 760px) {
+  html, body { height: auto; min-height: 100vh; }
+  body > header.header { height: auto; min-height: 64px; position: sticky; flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  body > header .logo h1 { font-size: 26px; }
+  body > header .tk { flex: 1 1 100%; order: 4; margin: 0; max-width: none; }
+  .danhmuc { margin-top: 12px; padding: 16px; }
+  .trungbay { padding: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filter-section, .filter-container { padding: 12px; }
+  .header-cart-link, .nguoidung { padding: 8px !important; }
+  .product-inner { flex-direction: column; padding: 16px; }
+  .product-left, .product-right { width: 100%; min-width: 0; }
+  .cart-wrapper { margin-top: 20px; }
+  .order-container { margin-top: 20px; }
+  .item-row { flex-wrap: wrap; gap: 8px; }
+  .register-container .form-row { flex-direction: column; }
+  .create-order-container { padding: 20px; margin: 16px 8px; }
+  .create-order-container .btn-back { position: static; display: inline-block; margin-bottom: 12px; }
+  .cart-item-card { flex-wrap: wrap; }
+  .sticky-payment-bar { width: 100%; left: 0; padding: 10px; }
+  .container { display: block; height: auto; }
+  .container .sidebar { position: static; width: 100%; height: auto; padding: 12px; border: 0; }
+  .container .sidebar .menu { display: flex; flex-wrap: wrap; gap: 6px; }
+  .main-content { margin-left: 0 !important; width: 100%; min-width: 0; overflow-x: auto; }
+  .main-container { margin-left: 0 !important; width: 100%; padding: 16px; }
+  .main-container .table-header { flex-wrap: wrap; gap: 12px; }
+  .main-container .search-wrapper { width: 100%; }
+  .main-container .card { max-width: 100%; overflow-x: auto; }
+  .payment-container { padding: 16px; }
+  .payment-card { margin: 0; }
+  .profile-layout, .profile-container { flex-direction: column; max-width: 100%; }
+  .profile-wrapper { flex-direction: column; margin-top: 16px !important; }
+  .profile-wrapper > .sidebar, .profile-wrapper > .main-content { width: 100%; }
+  .lpz-block { padding: 16px; }
+  .lpz-header { flex-wrap: wrap; gap: 12px; }
+  .lpz-col { width: 100%; margin-bottom: 12px; gap: 8px; }
+  .lpz-value { overflow-wrap: anywhere; }
+  .form-actions { width: 100%; padding: 10px; gap: 8px; }
+  .form-actions .btn-back, .form-actions .btn-submit-red { margin: 0; font-size: 14px; padding: 12px; }
+}
+@media (max-width: 420px) {
+  .trungbay { gap: 8px; padding: 12px; }
+  .thesp { padding: 10px; min-width: 0; }
+  .anhsp img { height: 125px; }
+  .gia { font-size: 16px; overflow-wrap: anywhere; }
+}

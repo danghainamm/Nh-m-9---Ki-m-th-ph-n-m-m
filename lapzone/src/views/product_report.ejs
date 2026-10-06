@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Báo cáo sản phẩm</title>
+    <link rel="stylesheet" href="/css/dashboard_qtv.css">
+    <style>
+        .report-container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #4CAF50 0%, #43A047 100%);
+            color: #fff;
+            padding: 18px;
+            border-radius: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            opacity: 0.85;
+        }
+
+        .stat-card .value {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-card.light {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            color: #333;
+        }
+
+        .stat-card.light h3 {
+            color: #777;
+        }
+
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .status-table th,
+        .status-table td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        .status-table th {
+            background: #f7f9fc;
+            color: #555;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .monthly-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .monthly-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 14px;
+            background: #fafafa;
+        }
+
+        .monthly-item span {
+            display: block;
+        }
+
+        .monthly-item .month {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .monthly-item .revenue {
+            font-size: 16px;
+            color: #388E3C;
+            margin-top: 6px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-left">
+            <img src="/images/logo.png" alt="Logo" class="logo-header">
+        </div>
+        <div class="user-info">
+            <div class="username">
+                <%= quanTriVien ? quanTriVien.hoTen : 'Admin' %>
+            </div>
+            <a href="/logout" class="logout">Đăng xuất</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <ul class="menu">
+                <li><a href="/quanlytaikhoan">Quản lý tài khoản khách hàng</a></li>
+                <li><a href="/quanlysanpham">Quản lý sản phẩm</a></li>
+                <li><a href="/quanlydonhang">Quản lý đơn hàng</a></li>
+                <li><a href="/xembaocao" class="active">Xem báo cáo</a></li>
+                <li><a href="/quanlykho">Quản lý kho</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content" style="margin-left: 250px; padding: 20px;">
+            <h1>Báo cáo tổng hợp</h1>
+
+            <div class="report-container">
+                <!-- Styles for icons -->
+                <style>
+                    .section-header {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 15px;
+                    }
+
+                    .calendar-icon {
+                        cursor: pointer;
+                        color: #666;
+                        transition: color 0.2s;
+                        display: inline-flex;
+                        align-items: center;
+                    }
+
+                    .calendar-icon:hover {
+                        color: #4CAF50;
+                    }
+
+                    .hidden-input {
+                        position: absolute;
+                        opacity: 0;
+                        pointer-events: none;
+                        width: 1px;
+                        height: 1px;
+                    }
+
+                    /* Make input clickable via label/icon trick or JS trigger */
+                </style>
+
+                <section class="section">
+                    <h2>Sản phẩm & tồn kho</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Tổng sản phẩm</h3>
+                            <div class="value">
+                                <%= stats?.productStats?.totalProducts || 0 %>
+                            </div>
+                            <div class="label">SKU đang kinh doanh</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Tổng tồn kho</h3>
+                            <div class="value">
+                                <%= stats?.productStats?.totalStock || 0 %>
+                            </div>
+                            <div class="label">Số lượng còn trong kho</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Giá trung bình</h3>
+                            <div class="value">
+                                <%= stats?.productStats?.avgPrice ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                    currency: 'VND' }).format(stats.productStats.avgPrice) : '0 ₫' %>
+                            </div>
+                            <div class="label">Giá bán trung bình</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2>Doanh thu & đơn hàng</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card light">
+                            <h3>Tổng đơn hàng</h3>
+                            <div class="value">
+                                <%= stats?.orderSummary?.totalOrders || 0 %>
+                            </div>
+                            <div class="label">Đơn đã tạo</div>
+                        </div>
+                        <div class="stat-card light">
+                            <h3>Tổng doanh thu</h3>
+                            <div class="value">
+                                <%= stats?.orderSummary?.totalRevenue ? new Intl.NumberFormat('vi-VN', {
+                                    style: 'currency' , currency: 'VND' }).format(stats.orderSummary.totalRevenue)
+                                    : '0 ₫' %>
+                            </div>
+                            <div class="label">Giá trị gộp</div>
+                        </div>
+                        <div class="stat-card light">
+                            <h3>Doanh thu hôm nay</h3>
+                            <div class="value">
+                                <%= stats?.todayRevenue ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                    currency: 'VND' }).format(stats.todayRevenue) : '0 ₫' %>
+                            </div>
+                            <div class="label">
+                                <%= new Date().toLocaleDateString('vi-VN') %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="status-table">
+                        <thead>
+                            <tr>
+                                <th>Trạng thái</th>
+                                <th>Số đơn</th>
+                                <th>Doanh thu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (stats?.orderStatus && stats.orderStatus.length) { %>
+                                <% stats.orderStatus.forEach(status=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= status.status %>
+                                        </td>
+                                        <td>
+                                            <%= status.count %>
+                                        </td>
+                                        <td>
+                                            <%= status.revenue ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                                currency: 'VND' }).format(status.revenue) : '0 ₫' %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="3" style="text-align:center;">Chưa có dữ liệu đơn hàng</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Doanh thu theo ngày <%= filters?.date ? `(${new
+                                Date(filters.date).toLocaleDateString('vi-VN')})` : '(7 ngày gần nhất)' %>
+                        </h2>
+                        <% if (filters?.date) { %>
+                            <a href="/xembaocao" class="clear-filter" title="Hủy lọc"
+                                style="color: #dc3545; margin-left: 5px; display: inline-flex; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </a>
+                            <% } %>
+                                <label for="date-picker" class="calendar-icon" title="Chọn ngày"
+                                    style="margin-left: 5px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </label>
+                                <input type="date" id="date-picker" class="hidden-input"
+                                    onchange="window.location.href='/xembaocao?date=' + this.value"
+                                    style="width: 0; padding: 0; border: none;">
+                    </div>
+                    <div class="monthly-list">
+                        <% if (stats?.dailyRevenue && stats.dailyRevenue.length) { %>
+                            <% stats.dailyRevenue.forEach(item=> { %>
+                                <div class="monthly-item">
+                                    <span class="month">
+                                        <%= item.day %>
+                                    </span>
+                                    <span class="revenue">
+                                        <%= item.revenue ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                            currency: 'VND' }).format(item.revenue) : '0 ₫' %>
+                                    </span>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>Chưa có dữ liệu doanh thu theo ngày.</p>
+                                        <% } %>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Doanh thu theo tuần <%= (filters?.week || filters?.weekInput) ? `(${filters.weekInput ||
+                                ('Tuần ' + filters.week)})` : ' (4 tuần gần nhất)' %>
+                        </h2>
+                        <% if (filters?.week || filters?.weekInput) { %>
+                            <a href="/xembaocao" class="clear-filter" title="Hủy lọc"
+                                style="color: #dc3545; margin-left: 5px; display: inline-flex; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </a>
+                            <% } %>
+                                <label for="week-picker" class="calendar-icon" title="Chọn tuần"
+                                    style="margin-left: 5px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </label>
+                                <input type="week" id="week-picker" class="hidden-input"
+                                    onchange="window.location.href='/xembaocao?weekInput=' + this.value"
+                                    style="width: 0; padding: 0; border: none;">
+                    </div>
+                    <div class="monthly-list">
+                        <% if (stats?.weeklyRevenue && stats.weeklyRevenue.length) { %>
+                            <% stats.weeklyRevenue.forEach(item=> { %>
+                                <div class="monthly-item">
+                                    <span class="month">
+                                        <%= item.weekLabel %>
+                                    </span>
+                                    <span class="revenue">
+                                        <%= item.revenue ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                            currency: 'VND' }).format(item.revenue) : '0 ₫' %>
+                                    </span>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>Chưa có dữ liệu doanh thu theo tuần.</p>
+                                        <% } %>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Doanh thu theo tháng <%= (filters?.month || filters?.monthInput) ? `(${filters.monthInput ||
+                                ('Tháng ' + filters.month)})` : ' (6 tháng gần nhất)' %>
+                        </h2>
+                        <% if (filters?.month || filters?.monthInput) { %>
+                            <a href="/xembaocao" class="clear-filter" title="Hủy lọc"
+                                style="color: #dc3545; margin-left: 5px; display: inline-flex; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </a>
+                            <% } %>
+                                <label for="month-picker" class="calendar-icon" title="Chọn tháng"
+                                    style="margin-left: 5px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </label>
+                                <input type="month" id="month-picker" class="hidden-input"
+                                    onchange="window.location.href='/xembaocao?monthInput=' + this.value"
+                                    style="width: 0; padding: 0; border: none;">
+                    </div>
+                    <div class="monthly-list">
+                        <% if (stats?.monthlyRevenue && stats.monthlyRevenue.length) { %>
+                            <% stats.monthlyRevenue.forEach(item=> { %>
+                                <div class="monthly-item">
+                                    <span class="month">
+                                        <%= item.month %>
+                                    </span>
+                                    <span class="revenue">
+                                        <%= item.revenue ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                            currency: 'VND' }).format(item.revenue) : '0 ₫' %>
+                                    </span>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>Chưa có dữ liệu doanh thu theo tháng.</p>
+                                        <% } %>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Doanh thu theo năm <%= (filters?.year || filters?.yearInput) ? `(${filters.yearInput ||
+                                filters.year})` : '' %>
+                        </h2>
+                        <% if (filters?.year || filters?.yearInput) { %>
+                            <a href="/xembaocao" class="clear-filter" title="Hủy lọc"
+                                style="color: #dc3545; margin-left: 5px; display: inline-flex; align-items: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </a>
+                            <% } %>
+                                <label for="year-picker" class="calendar-icon" title="Chọn năm"
+                                    style="margin-left: 5px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </label>
+                                <!-- Custom year picker using select for better UX -->
+                                <select id="year-picker"
+                                    onchange="window.location.href='/xembaocao?yearInput=' + this.value"
+                                    style="width: 80px; height: 30px; border: 1px solid #ddd; visibility: visible; display: none; margin-left: 10px;">
+                                    <option value="">Chọn năm</option>
+                                    <% const currentYear=new Date().getFullYear(); for(let y=currentYear; y>=
+                                        currentYear -
+                                        20; y--) {
+                                        %>
+                                        <option value="<%= y %>" <%=filters?.year==y ? 'selected' : '' %>><%= y %>
+                                        </option>
+                                        <% } %>
+                                </select>
+                    </div>
+
+                    <!-- Script to handle Year Picker toggle -->
+                    <script>
+                        document.querySelector('label[for="year-picker"]').onclick = function (e) {
+                            e.preventDefault();
+                            const yearInput = document.getElementById('year-picker');
+                            if (yearInput.style.display === 'none') {
+                                yearInput.style.display = 'inline-block';
+                                yearInput.focus();
+                                // Simulate open if possible (not possible for standard select programmatically in all browsers)
+                                // But showing it inline is good enough.
+                            } else {
+                                yearInput.style.display = 'none';
+                            }
+                        };
+                        document.querySelector('label[for="date-picker"]').onclick = function (e) {
+                            e.preventDefault();
+                            document.getElementById('date-picker').showPicker();
+                        };
+                        document.querySelector('label[for="week-picker"]').onclick = function (e) {
+                            e.preventDefault();
+                            document.getElementById('week-picker').showPicker();
+                        };
+                        document.querySelector('label[for="month-picker"]').onclick = function (e) {
+                            e.preventDefault();
+                            document.getElementById('month-picker').showPicker();
+                        };
+                    </script>
+
+                    <div class="monthly-list">
+                        <% if (stats?.yearlyRevenue && stats.yearlyRevenue.length) { %>
+                            <% stats.yearlyRevenue.forEach(item=> { %>
+                                <div class="monthly-item">
+                                    <span class="month">
+                                        Năm <%= item.year %>
+                                    </span>
+                                    <span class="revenue">
+                                        <%= item.revenue ? new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                            currency: 'VND' }).format(item.revenue) : '0 ₫' %>
+                                    </span>
+                                </div>
+                                <% }) %>
+                                    <% } else { %>
+                                        <p>Chưa có dữ liệu doanh thu theo năm.</p>
+                                        <% } %>
+                    </div>
+                </section>
+
+                <section class="section" style="margin-top: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <section class="section">
+                            <h2>Top 5 sản phẩm bán chạy</h2>
+                            <table class="status-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Đã bán</th>
+                                        <th>Doanh thu</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (stats?.topProducts && stats.topProducts.length) { %>
+                                        <% stats.topProducts.forEach(p=> { %>
+                                            <tr>
+                                                <td>
+                                                    <%= p.tenSanPham %>
+                                                </td>
+                                                <td>
+                                                    <%= p.totalSold %>
+                                                </td>
+                                                <td>
+                                                    <%= new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                                        currency: 'VND' }).format(p.totalRevenue) %>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="3" style="text-align: center;">Chưa có dữ liệu</td>
+                                                    </tr>
+                                                    <% } %>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <section class="section">
+                            <h2>5 Đơn hàng gần nhất</h2>
+                            <table class="status-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã ĐH</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (stats?.recentOrders && stats.recentOrders.length) { %>
+                                        <% stats.recentOrders.forEach(o=> { %>
+                                            <tr>
+                                                <td>
+                                                    <%= o.maDonHang.substring(0, 8) %>...
+                                                </td>
+                                                <td>
+                                                    <%= new Date(o.ngayDatHang).toLocaleDateString('vi-VN') %>
+                                                </td>
+                                                <td>
+                                                    <%= new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                                        currency: 'VND' }).format(o.tongGiaTri) %>
+                                                </td>
+                                                <td>
+                                                    <%= o.trangThai %>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="4" style="text-align: center;">Chưa có đơn hàng
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="/quanlysanpham" class="btn">Quay lại quản lý sản phẩm</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

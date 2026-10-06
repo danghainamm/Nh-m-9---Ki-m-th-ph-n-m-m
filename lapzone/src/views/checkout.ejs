@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt hàng</title>
+  <link rel="stylesheet" href="/css/order.css" />
+  <link rel="stylesheet" href="/css/dashboard_kh.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <header class="header">
+      <div class="logo"><a href="/kh/trangchu">
+        <h1>Lapzone</h1>
+      </a></div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get">
+          <i class="fa fa-search"></i>
+          <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+        <span style="color: white;">Giỏ hàng</span>
+      </a>
+
+      <div class="nguoidung">
+        <div class="user-box-click">
+          <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+          <span style="color: white;">
+            <%= khachHang ? khachHang.hoTen : "Đăng nhập" %>
+          </span>
+        </div>
+      </div>
+    </header>
+
+  <div class="order-container">
+    <form class="order-form" id="orderForm" action="/order/checkout" method="POST">
+
+      <!-- THÔNG TIN NGƯỜI NHẬN -->
+     <div class="buyer-info">
+        <h3>THÔNG TIN NGƯỜI NHẬN</h3>
+        <div class="account-selector-wrapper">
+          <input type="checkbox" id="useAccountInfo" name="useAccountInfo" checked style="display:none">
+          <div id="accountSelector" class="account-selector" role="radio" tabindex="0" aria-checked="true">
+            <div class="select-dot" aria-hidden="true"><span class="dot"></span></div>
+            <div class="account-info">
+              <div class="account-name"><%= khachHang ? (khachHang.hoTen || khachHang.name || khachHang.id) : 'Tài khoản' %></div>
+              <div class="account-meta">SĐT: <%= khachHang ? (khachHang.soDienThoai || '—') : '—' %></div>
+            </div>
+          </div>
+
+          <!-- Hidden select for saved addresses (one default entry will be selected if exists) -->
+          <div style="display:none;">
+            <select id="selectDiaChi">
+              <% if (diaChiList && diaChiList.length) { %>
+                <% diaChiList.forEach(function(dc, idx){ %>
+                  <option value="<%= dc.maDiaChi %>" data-hoten="<%= dc.hoTenNguoiNhan %>" data-sdt="<%= dc.soDienThoaiNguoiNhan %>" data-diachi="<%= dc.diaChiNhanHang %>" <%= dc.laMacDinh ? 'selected' : '' %>><%= dc.diaChiNhanHang %> — <%= dc.hoTenNguoiNhan %> — <%= dc.soDienThoaiNguoiNhan %></option>
+                <% }) %>
+              <% } else { %>
+                <option value="">Không có địa chỉ lưu</option>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Hidden input để gửi maDiaChiChon -->
+          <input type="hidden" id="maDiaChiChon" name="maDiaChiChon" value="">
+        </div>
+        <label>
+          Họ tên<span class="required">*</span>
+          <input type="text" id="hoTenNguoiNhan" name="hoTenNguoiNhan" required value="<%= khachHang.hoTen %>">
+        </label>
+        <label>
+          Số điện thoại<span class="required">*</span>
+          <input type="text" id="soDienThoaiNguoiNhan" name="soDienThoaiNguoiNhan" required value="<%= khachHang.soDienThoai %>">
+        </label>
+        <label>
+          Địa chỉ nhận hàng<span class="required">*</span>
+          <input type="text" id="diaChiNhanHang" name="diaChiNhanHang" required value="<%= khachHang.diaChi || '' %>">
+        </label>
+        <label>
+          Ghi chú
+          <textarea name="ghiChu"></textarea>
+        </label>
+      </div>
+
+      <!-- PHƯƠNG THỨC THANH TOÁN -->
+      <div class="payment-info">
+        <h3>PHƯƠNG THỨC THANH TOÁN</h3>
+        <label>
+        <input type="radio" name="phuongThuc" value="Ngân hàng" required>
+          Thanh toán bằng tài khoản ngân hàng
+        </label>
+        <label>
+          <input type="radio" name="phuongThuc" value="Nhận hàng">
+          Thanh toán khi nhận hàng
+        </label>
+        <label>
+          <input type="radio" name="phuongThuc" value="Tại cửa hàng">
+          Thanh toán tại cửa hàng
+        </label>
+
+        <h4 style="margin-top: 25px;">XÁC NHẬN ĐƠN HÀNG</h4>
+        <div class="order-summary" id="orderSummary">
+          <!-- Sản phẩm sẽ được load bằng JavaScript -->
+          <div id="productList"></div>
+
+          <div class="total-row">
+            <span>Tổng tiền:</span>
+            <strong id="tongTien">0 VNĐ</strong>
+          </div>
+
+          <input type="hidden" id="hiddenTongGiaTri" name="tongGiaTri" value="0">
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">Xác nhận đơn hàng</button>
+        <button type="button" class="back-btn" onclick="history.back()">Quay lại giỏ hàng</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="application/json" id="currentCartData"><%- JSON.stringify(cartItems).replace(/</g, "\\u003c") %></script>
+  <script>
+    // LẤY SẢN PHẨM ĐÃ CHỌN TỪ SESSIONSTORAGE
+    const currentCart = JSON.parse(document.getElementById('currentCartData').textContent);
+    let selectedItems = [];
+
+    try {
+      const storedItems = sessionStorage.getItem('selectedCartItems');
+      if (storedItems) {
+        const ids = JSON.parse(storedItems).map(item => item.maSanPham);
+        selectedItems = currentCart.filter(item => ids.includes(item.maSanPham));
+        if (!selectedItems.length) throw new Error('Giỏ hàng đã thay đổi.');
+      } else {
+        alert('Không có sản phẩm nào được chọn!');
+        window.location.href = '/cart';
+      }
+    } catch (e) {
+      console.error('Lỗi đọc dữ liệu:', e);
+      alert('Có lỗi xảy ra! Vui lòng thử lại.');
+      window.location.href = '/cart';
+    }
+
+    // HIỂN THỊ DANH SÁCH SẢN PHẨM
+    function escapeProductText(value) { const span = document.createElement('span'); span.textContent = value; return span.innerHTML; }
+    function displaySelectedProducts() {
+      const productListEl = document.getElementById('productList');
+      let tongTien = 0;
+      let html = '';
+
+      selectedItems.forEach(item => {
+        const donGia = parseFloat(item.DonGia) || 0;
+        const soLuong = parseInt(item.soLuong) || 0;
+        const thanhTien = donGia * soLuong;
+        tongTien += thanhTien;
+
+        html += `
+          <div class="item-row" style="padding: 10px 0; border-bottom: 1px solid #eee;">
+            <span class="product-name" style="flex: 1;">${escapeProductText(item.tenSanPham)}</span>
+            <span class="product-quantity" style="margin: 0 10px;">x${soLuong}</span>
+            <span class="product-price" style="font-weight: 600;">${thanhTien.toLocaleString('vi-VN')} VNĐ</span>
+          </div>
+        `;
+      });
+
+      productListEl.innerHTML = html;
+      document.getElementById('tongTien').textContent = tongTien.toLocaleString('vi-VN') + ' VNĐ';
+      document.getElementById('hiddenTongGiaTri').value = tongTien;
+    }
+
+    // Hiển thị khi trang load
+    window.addEventListener('DOMContentLoaded', function() {
+      displaySelectedProducts();
+
+      // Setup account selector behavior (same as order page)
+      const useCheckbox = document.getElementById('useAccountInfo');
+      const accountSelector = document.getElementById('accountSelector');
+
+      function toggleAccountInfo() {
+        const ho = document.getElementById('hoTenNguoiNhan');
+        const sdt = document.getElementById('soDienThoaiNguoiNhan');
+        const diachi = document.getElementById('diaChiNhanHang');
+        if (!useCheckbox || !ho || !sdt || !diachi) return;
+
+        if (useCheckbox.checked) {
+          ho.value = window.khachHang?.hoTen || ho.value || '';
+          sdt.value = window.khachHang?.soDienThoai || sdt.value || '';
+          diachi.value = window.khachHang?.diaChi || diachi.value || '';
+          ho.readOnly = sdt.readOnly = diachi.readOnly = true;
+          if (accountSelector) { accountSelector.classList.add('selected'); accountSelector.setAttribute('aria-checked','true'); }
+        } else {
+          ho.readOnly = sdt.readOnly = diachi.readOnly = false;
+          if (accountSelector) { accountSelector.classList.remove('selected'); accountSelector.setAttribute('aria-checked','false'); }
+        }
+      }
+
+      if (useCheckbox) {
+        useCheckbox.addEventListener('change', toggleAccountInfo);
+        toggleAccountInfo();
+      }
+
+      if (accountSelector) {
+        accountSelector.addEventListener('click', function() {
+          if (useCheckbox) {
+            useCheckbox.checked = !useCheckbox.checked;
+            useCheckbox.dispatchEvent(new Event('change'));
+          }
+        });
+        accountSelector.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            accountSelector.click();
+          }
+        });
+        accountSelector.classList.toggle('selected', useCheckbox && useCheckbox.checked);
+        accountSelector.setAttribute('aria-checked', useCheckbox && useCheckbox.checked);
+      }
+
+      // Provide a simple fillAddress() to use the default saved address when available
+      function fillAddress() {
+        const selectEl = document.getElementById('selectDiaChi');
+        if (!selectEl) return;
+        const selectedOption = selectEl.options[selectEl.selectedIndex];
+        const ho = document.getElementById('hoTenNguoiNhan');
+        const sdt = document.getElementById('soDienThoaiNguoiNhan');
+        const diachi = document.getElementById('diaChiNhanHang');
+        const maInput = document.getElementById('maDiaChiChon');
+
+        if (selectedOption && selectedOption.value) {
+          if (ho) ho.value = selectedOption.dataset.hoten || (window.khachHang?.hoTen || '');
+          if (sdt) sdt.value = selectedOption.dataset.sdt || (window.khachHang?.soDienThoai || '');
+          if (diachi) diachi.value = selectedOption.dataset.diachi || (window.khachHang?.diaChi || '');
+          if (maInput) maInput.value = selectedOption.value || '';
+        }
+      }
+
+      // Ensure toggleAccountInfo uses default saved address if present
+      const selectElInit = document.getElementById('selectDiaChi');
+      if (selectElInit && useCheckbox && useCheckbox.checked) {
+        fillAddress();
+        // mark fields readonly
+        const hoInit = document.getElementById('hoTenNguoiNhan');
+        const sdtInit = document.getElementById('soDienThoaiNguoiNhan');
+        const diachiInit = document.getElementById('diaChiNhanHang');
+        if (hoInit) hoInit.readOnly = true;
+        if (sdtInit) sdtInit.readOnly = true;
+        if (diachiInit) diachiInit.readOnly = true;
+        if (accountSelector) accountSelector.classList.add('selected');
+      }
+
+      // If user manually edits recipient inputs, clear selected address and uncheck account usage
+      const hoInputCk = document.getElementById('hoTenNguoiNhan');
+      const sdtInputCk = document.getElementById('soDienThoaiNguoiNhan');
+      const diachiInputCk = document.getElementById('diaChiNhanHang');
+      const maDiaChiInputCk = document.getElementById('maDiaChiChon');
+
+      [hoInputCk, sdtInputCk, diachiInputCk].forEach(el => {
+        if (!el) return;
+        el.addEventListener('input', function() {
+          if (maDiaChiInputCk && maDiaChiInputCk.value) {
+            maDiaChiInputCk.value = '';
+          }
+          if (useCheckbox && useCheckbox.checked) {
+            useCheckbox.checked = false;
+            useCheckbox.dispatchEvent(new Event('change'));
+            if (accountSelector) accountSelector.classList.remove('selected');
+          }
+        });
+      });
+    });
+
+    // XỬ LÝ SUBMIT FORM
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.textContent;
+
+      // Client-side validation: ensure name, phone, address are present
+      const ho = document.getElementById('hoTenNguoiNhan');
+      const sdt = document.getElementById('soDienThoaiNguoiNhan');
+      const diachi = document.getElementById('diaChiNhanHang');
+
+      if (!ho || !sdt || !diachi || !ho.value.trim() || !sdt.value.trim() || !diachi.value.trim()) {
+        alert('Vui lòng nhập đầy đủ Họ tên, Số điện thoại và Địa chỉ giao hàng.');
+        if (ho && !ho.value.trim()) ho.focus();
+        else if (sdt && !sdt.value.trim()) sdt.focus();
+        else if (diachi && !diachi.value.trim()) diachi.focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Đang xử lý...';
+
+      try {
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        // THÊM DANH SÁCH SẢN PHẨM ĐÃ CHỌN
+        data.cartItems = selectedItems;
+
+
+        const response = await fetch('/order/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // XÓA SESSIONSTORAGE SAU KHI ĐẶT HÀNG THÀNH CÔNG
+          sessionStorage.removeItem('selectedCartItems');
+
+          // KIỂM TRA THANH TOÁN QR
+          if (result.needQRPayment && result.qrPaymentUrl) {
+            window.location.href = result.qrPaymentUrl;
+          } else {
+            alert('Đặt hàng thành công!\nMã đơn hàng: ' + result.order.maDonHang);
+            window.location.href = '/kh/trangchu';
+          }
+        } else {
+          alert('Lỗi: ' + result.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      } catch (error) {
+        console.error('Lỗi:', error);
+        alert('Có lỗi xảy ra: ' + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  </script>
+</body>
+</html>

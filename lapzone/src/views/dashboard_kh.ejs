@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Lapzone - Trang chủ</title>
+
+    <link rel="stylesheet" href="/css/dashboard_kh.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+  <body>
+
+    <header class="header">
+
+      <div class="logo"><a href="/kh/trangchu">
+        <h1>Lapzone</h1>
+      </a></div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get">
+          <i class="fa fa-search"></i>
+          <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+        <span style="color: white;">Giỏ hàng</span>
+      </a>
+
+      <div>
+        <% if (khachHang && khachHang.hoTen) { %>
+          <a href="/profile" class="user-box-click nguoidung" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+            <span style="color: white; font-weight: bold;">
+              <%= khachHang.hoTen %>
+            </span>
+          </a>
+        <% } else { %>
+          <a href="/login" class="user-box-click nguoidung" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+            <span style="color: white;">Đăng nhập</span>
+          </a>
+        <% } %>
+      </div>
+    </header>
+
+  <section class="danhmuc">
+    <p class="needs-title">Chọn theo nhu cầu</p>
+
+    <div class="needs-container">
+      <% danhMuc.forEach(function(dm, index) { %>
+        <div class="DM">
+          <a href="/product/category/<%= dm.maDanhMuc %>" class="thedanhmuc">
+            <div class="DM-box">
+             <div class="anhDM">
+                <img src="<%= dm.anhMinhHoaDM %>" alt="" />
+             </div>
+            </div>
+            <p class="tenDM"><%= dm.tenDanhMuc %></p>
+          </a>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <div class="title" style="padding-left: 15px;"><p>Sản phẩm</p></div>
+
+  <section class="filter-section">
+    <div class="filter-container">
+      <h3 class="filter-title">Chọn theo tiêu chí</h3>
+
+      <div class="filter-tags">
+        <div class="filter-item main-filter" id="btn-open-filter">
+          <i class="fa-solid fa-filter"></i>
+          <span>Bộ lọc</span>
+        </div>
+
+        <%
+        const filtersSearch = [
+          { title: 'Hãng sản xuất', key: 'brand', values: [{ id: 'dell', label: 'Dell' }, { id: 'hp', label: 'HP' }, { id: 'asus', label: 'Asus' }, { id: 'lenovo', label: 'Lenovo' }, { id: 'apple', label: 'Apple' }] },
+          { title: 'Nhu cầu sử dụng', key: 'category', values: [{ id: 'gaming', label: 'Gaming' }, { id: 'văn phòng', label: 'Văn phòng' }, { id: 'ai', label: 'Laptop AI' }] },
+          { title: 'CPU', key: 'cpu', values: [{ id: 'i5', label: 'Intel Core i5' }, { id: 'i7', label: 'Intel Core i7' }, { id: 'ryzen 7', label: 'Ryzen 7' }] },
+          { title: 'RAM', key: 'ram', values: [{ id: '8', label: '8GB' }, { id: '16', label: '16GB' }, { id: '32', label: '32GB' }] },
+          { title: 'Ổ cứng', key: 'storage', values: [{ id: '256', label: '256GB' }, { id: '512', label: '512GB' }, { id: '1tb', label: '1TB' }] },
+          { title: 'Kích thước màn hình', key: 'size', values: [{ id: '13', label: '13 inches' }, { id: '14', label: '14 inches' }, { id: '15+', label: '15 inches trở lên' }] },
+          { title: 'Độ phân giải', key: 'resolution', values: [{ id: 'qhd', label: 'QHD' }, { id: 'fhd', label: 'FHD' }, { id: '4k', label: '4K' }] }
+        ];
+        %>
+
+        <% filtersSearch.forEach((f, index) => { %>
+          <div class="filter-item dropdown parent <%= index >= 4 ? 'align-right' : '' %>">
+            <span><%= f.title %></span>
+            <i class="fa-solid fa-chevron-down"></i>
+
+            <div class="submenu">
+              <ul>
+                <% f.values.forEach(v => { %>
+                  <li data-filter="<%= f.key %>" data-value="<%= v.id %>"><%= v.label %></li>
+                <% }) %>
+              </ul>
+              <div class="submenu-btns">
+                <button class="close-submenu">Đóng</button>
+                <button class="apply-submenu">Xem kết quả</button>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+
+        <div class="filter-item dropdown parent align-right" id="filter-price-box">
+          <span>Xem theo giá</span>
+          <i class="fa-solid fa-chevron-down"></i>
+          <div class="submenu price-filter-box">
+            <p class="price-label">Hãy chọn mức giá phù hợp với bạn</p>
+
+            <div class="kg price-input-container">
+              <div class="price-field">
+                <input type="number" id="minPrice" value="0">
+                <span>đ</span>
+              </div>
+              <div class="separator">-</div>
+              <div class="price-field">
+                <input type="number" id="maxPrice" value="100000000">
+                <span>đ</span>
+              </div>
+            </div>
+
+            <div class="slider-container">
+              <div class="slider-track" id="sliderTrack"></div>
+              <input type="range" class="min-range" id="minRange" min="0" max="100000000" value="0" step="100000">
+              <input type="range" class="max-range" id="maxRange" min="0" max="100000000" value="100000000" step="100000">
+            </div>
+
+            <div class="submenu-btns">
+              <button class="close-submenu">Đóng</button>
+              <button id="applyPrice" class="apply-submenu active">Xem kết quả</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trungbay" id="product-grid">
+    <% sanPham.forEach(function(sp, index) { %>
+    <div class="thesp">
+      <a href="/product/<%= sp.maSanPham %>" style="text-decoration: none;">
+        <div class="anhsp"><img src="<%= sp.anhMinhHoaSP %>" alt="" /></div>
+        <div class="ttsp">
+          <p class="ten"><%= sp.tenSanPham %></p>
+
+          <div class="price-box">
+            <p class="gia"><%= Number(sp.giaBan).toLocaleString('vi-VN') %>đ</p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <% }); %>
+  </section>
+
+  <div class="view-more-wrap">
+    <button id="load-more-btn">
+      Xem thêm <span id="count-remaining"></span> sản phẩm <i class="fa fa-chevron-down"></i>
+    </button>
+  </div>
+
+  <footer style="background-color: rgb(242, 242, 242);">
+    <div class="footer-content">
+      <p>Công ty TNHH Thương Mại và Dịch Vụ Kỹ Thuật Lapzone - GPĐKKD: 0123456789 cấp tại Sở KH & ĐT TP. Hà Nội.</p>
+      <p>Địa chỉ văn phòng: 289 Đường Cầu Diễn, Tây Tựu, Hà Nội, Việt Nam. Điện thoại: 0987654321.</p>
+    </div>
+  </footer>
+
+</body>
+<script src="/js/dashboard_kh.js"></script>
+<script src="/js/filter.js"></script>
+</html>

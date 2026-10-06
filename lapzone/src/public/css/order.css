@@ -1,0 +1,232 @@
+:root {
+    --cps-red: #d70018;
+    --bg-light: #f4f6f8;
+    --text-main: #333;
+    --border-color: #e5e7eb;
+    --blue-focus: #3b82f6;
+    --blue-bg: #eff6ff;
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.order-container {
+    width: 700px;
+    margin: 80px auto 50px;
+    padding: 0 15px;
+}
+
+.order-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.buyer-info, 
+.payment-info {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--cps-red);
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.account-selector {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background-color: #f9fafb;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.select-dot .dot {
+    height: 18px;
+    width: 18px;
+    border: 5px solid #9ca3af;
+    border-radius: 50%;
+    display: block;
+}
+
+.account-selector.selected {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.account-selector.selected .select-dot .dot {
+    border: 5px solid #3b82f6;
+}
+
+.account-name { 
+  font-weight: bold; 
+  font-size: 15px; 
+  margin-bottom: 4px; 
+}
+
+.account-meta { 
+  font-size: 13px; 
+  color: #666; 
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.required { 
+  color: var(--cps-red); 
+  margin-left: 3px; 
+}
+
+input[type="text"], 
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #f9fafb;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: 0.2s;
+}
+
+input:focus, 
+textarea:focus {
+    border-color: var(--cps-red);
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(215, 0, 24, 0.1);
+}
+
+textarea { min-height: 100px; resize: none; }
+
+.payment-info label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-weight: normal;
+    transition: 0.2s;
+}
+
+.payment-info label:hover {
+    background-color: #fff5f5;
+    border-color: var(--cps-red);
+}
+
+.payment-info input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--cps-red);
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 30px 0 15px;
+    color: var(--cps-red);
+    text-align: center;
+}
+
+.order-summary {
+    background: #fdfdfd;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.product-name { 
+  font-weight: 500; 
+  font-size: 14px; 
+  color: #444; 
+}
+
+.product-price { 
+  color: var(--cps-red); 
+  font-weight: 600; 
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    margin-top: 10px;
+}
+
+#tongTien {
+    color: var(--cps-red);
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(180deg, #e11b22 0%, #d70018 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(215, 0, 24, 0.3);
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(215, 0, 24, 0.4);
+}
+
+.back-btn {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: #666;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: #f9fafb;
+    color: #333;
+}

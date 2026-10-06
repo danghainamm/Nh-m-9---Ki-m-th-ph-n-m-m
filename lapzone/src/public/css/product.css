@@ -1,0 +1,242 @@
+/* Product Layout - Cấu trúc khung trang sản phẩm */
+.product-page {
+  padding: 100px 20px 30px 20px; /* Thêm padding-top để không bị Header fixed che mất */
+}
+
+.product-inner {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.product-left {
+  flex: 0 0 52%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.product-right {
+  flex: 0 0 44%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image Section - Khu vực hình ảnh */
+.main-image-wrap {
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #eee;
+  width: 100%;
+  max-width: 450px;
+  height: 450px;
+}
+
+.main-image-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.thumbs {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.thumbs .thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid #eee;
+  cursor: pointer;
+}
+
+.thumbs .thumb:hover {
+  border-color: #d70018; /* Màu đỏ nhấn khi hover ảnh nhỏ */
+}
+
+/* Info Section - Thông tin sản phẩm */
+.product-title {
+  font-size: 26px;
+  margin-bottom: 10px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.price-block {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+}
+
+.price-value {
+  color: #e53935;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.status-text {
+  font-size: 14px;
+  color: #00c853; /* Màu xanh lá cho trạng thái còn hàng */
+}
+
+.features {
+  margin-top: 25px;
+  width: 100%;
+}
+
+.features h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-left: 4px solid #d70018;
+  padding-left: 10px;
+}
+
+.features p {
+  color: #555;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* Technical Specs - Thông số kỹ thuật */
+.specs {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.specs h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.specs table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.specs th, .specs td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.specs th {
+  background: #f9f9f9;
+  width: 40%;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Actions - Các nút bấm đặc thù trang sản phẩm */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn-primary.buy, .add-to-cart-btn {
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.btn-primary.buy {
+  background: linear-gradient(to right, #d70018, #e54c33);
+  color: #fff;
+}
+
+.add-to-cart-btn {
+  background: #fff;
+  color: #d70018;
+  border: 1px solid #d70018;
+}
+
+.btn-primary.buy:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.add-to-cart-btn:hover {
+  background: #fff5f5;
+  transform: translateY(-2px);
+}
+
+/* Quantity Modal - Modal nhập số lượng */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-box {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+#quantityInput {
+  width: 80px;
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.add-btn {
+  background: #d70018;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .product-inner {
+    flex-direction: column;
+    padding-top: 80px;
+  }
+  .product-left, .product-right {
+    width: 100%;
+  }
+  .main-image-wrap {
+    max-width: 100%;
+    height: auto;
+  }
+}

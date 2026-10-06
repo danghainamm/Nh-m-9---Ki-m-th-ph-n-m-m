@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <title><%= sanPham.tenSanPham %></title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/product.css" />
+    <link rel="stylesheet" href="/css/review.css" />
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+  <body>
+    <header class="header">
+      <div class="logo">
+        <a href="/kh/trangchu"><img src="/images/logo.png" alt="logo" /></a>
+      </div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get" style="display: flex">
+          <input
+            type="text"
+            name="keyword"
+            placeholder="Nhập từ khóa tìm kiếm..."
+          />
+          <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <div class="fa fa-shopping-cart" id="cart"></div>
+        Giỏ hàng
+      </a>
+
+      <div class="nguoidung">
+        <p><%= khachHang ? khachHang.hoTen : 'Khách' %></p>
+        <% if (!khachHang) { %><a href="/login">Đăng nhập để đánh giá</a><% } %>
+        <ul class="list">
+          <li><a href="/profile">Quản lý thông tin</a></li>
+          <li><a href="/order/my-orders">Đơn hàng của tôi</a></li>
+          <li><a href="/logout" class="logout">Đăng xuất</a></li>
+          <li><a href="/kh/doimatkhau">Đổi mật khẩu</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="product-page">
+      <div class="product-inner">
+        <div class="product-left">
+          <div class="main-image-wrap">
+            <img
+              src="<%= sanPham.anhMinhHoaSP %>"
+              alt="anhminhhoasp"
+              id="mainImage"
+            />
+          </div>
+
+          <div class="thumbs">
+            <% if (sanPham.anhMinhHoaSP) { %>
+            <img class="thumb" src="<%= sanPham.anhMinhHoaSP %>" alt="thumb1" />
+            <% } %> <% if (sanPham.anhMinhHoaSP) { %>
+            <img class="thumb" src="<%= sanPham.anhMinhHoaSP %>" alt="thumb2" />
+            <% } %> <% if (sanPham.anhMinhHoaSP) { %>
+            <img class="thumb" src="<%= sanPham.anhMinhHoaSP %>" alt="thumb3" />
+
+            <% } %>
+          </div>
+
+          <div class="features">
+            <h3>Đặc điểm nổi bật</h3>
+            <p><%= sanPham.moTa %></p>
+          </div>
+        </div>
+
+        <% if (sanPham.ram || sanPham.cpu || sanPham.hdh) { %>
+        <div class="product-right">
+          <div class="meta-row">
+            <h1 class="product-title"><%= sanPham.tenSanPham %></h1>
+            <div class="status">
+              <i class="fa fa-circle" aria-hidden="true"></i>
+              <span class="status-text"><%= sanPham.tinhTrang %></span>
+            </div>
+          </div>
+
+          <div class="brand">
+            Thương hiệu: <strong><%= sanPham.thuongHieu %></strong>
+          </div>
+          <div class="small-meta">
+            Đánh giá: <span class="rating">-</span> | Kho:
+            <span class="stock"><%= sanPham.kho %></span>
+          </div>
+
+          <div class="price-block">
+            <div class="price">
+              Giá bán:
+              <span class="price-value"
+                ><%= (sanPham.giaBan || 0).toLocaleString() %></span
+              >
+              VND
+            </div>
+          </div>
+
+          <div class="actions">
+            <a
+              href="/order/dat-hang/<%= sanPham.maSanPham %>"
+              class="btn btn-primary buy"
+              >Mua ngay</a
+            >
+            <a
+              href="javascript:void(0);"
+              class="add-to-cart-btn"
+              onclick="promptForQuantity(event, '<%= sanPham.maSanPham %>')"
+            >
+              Thêm vào giỏ
+            </a>
+          </div>
+
+          <div class="specs">
+            <h2>Thông số kỹ thuật</h2>
+            <table cellspacing="0">
+              <% if (sanPham.ram) { %>
+              <tr>
+                <th>RAM</th>
+                <td><%= sanPham.ram %></td>
+              </tr>
+              <% } %> <% if (sanPham.rom) { %>
+              <tr>
+                <th>ROM</th>
+                <td><%= sanPham.rom %></td>
+              </tr>
+              <% } %> <% if (sanPham.cpu) { %>
+              <tr>
+                <th>CPU</th>
+                <td><%= sanPham.cpu %></td>
+              </tr>
+              <% } %> <% if (sanPham.cardDH) { %>
+              <tr>
+                <th>Card đồ họa</th>
+                <td><%= sanPham.cardDH %></td>
+              </tr>
+              <% } %> <% if (sanPham.soKheRam) { %>
+              <tr>
+                <th>Số khe RAM</th>
+                <td><%= sanPham.soKheRam %></td>
+              </tr>
+              <% } %> <% if (sanPham.kichThuocMH) { %>
+              <tr>
+                <th>Kích thước màn hình</th>
+                <td><%= sanPham.kichThuocMH %></td>
+              </tr>
+              <% } %> <% if (sanPham.pin) { %>
+              <tr>
+                <th>Pin</th>
+                <td><%= sanPham.pin %></td>
+              </tr>
+              <% } %> <% if (sanPham.hdh) { %>
+              <tr>
+                <th>Hệ điều hành</th>
+                <td><%= sanPham.hdh %></td>
+              </tr>
+              <% } %> <% if (sanPham.congNgheMH) { %>
+              <tr>
+                <th>Công nghệ màn hình</th>
+                <td><%= sanPham.congNgheMH %></td>
+              </tr>
+              <% } %> <% if (sanPham.doPhanGiaiMH) { %>
+              <tr>
+                <th>Độ phân giải màn hình</th>
+                <td><%= sanPham.doPhanGiaiMH %></td>
+              </tr>
+              <% } %> <% if (sanPham.port) { %>
+              <tr>
+                <th>Cổng kết nối</th>
+                <td><%= sanPham.port %></td>
+              </tr>
+              <% } %>
+            </table>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+    <!-- Modal nhập số lượng -->
+    <div id="quantityModal" class="modal-overlay" style="display: none">
+      <div class="modal-box">
+        <h2>Nhập số lượng</h2>
+
+        <input type="number" id="quantityInput" min="1" value="1" />
+
+        <button class="add-btn" id="confirmAddBtn">Thêm vào giỏ</button>
+
+        <span class="close-btn" id="closeModalBtn">×</span>
+      </div>
+    </div>
+    <!-- Đánh giá -->
+    <div class="review-section">
+      <h2 class="title">Đánh giá sản phẩm</h2>
+
+      <div class="summary-box">
+        <div class="left">
+          <h1 class="avg-score">0.0<span>/5</span></h1>
+          <div class="stars"></div>
+          <p class="count">0 lượt đánh giá</p>
+
+          <button class="write-btn">Viết đánh giá</button>
+        </div>
+
+        <div class="right">
+          <div class="rating-row">
+            <span>5 ⭐</span>
+            <div class="bar">
+              <div class="bar-fill" style="width: 0%"></div>
+            </div>
+            <span>0 đánh giá</span>
+          </div>
+
+          <div class="rating-row">
+            <span>4 ⭐</span>
+            <div class="bar">
+              <div class="bar-fill" style="width: 0%"></div>
+            </div>
+            <span>0 đánh giá</span>
+          </div>
+
+          <div class="rating-row">
+            <span>3 ⭐</span>
+            <div class="bar">
+              <div class="bar-fill" style="width: 0%"></div>
+            </div>
+            <span>0 đánh giá</span>
+          </div>
+
+          <div class="rating-row">
+            <span>2 ⭐</span>
+            <div class="bar">
+              <div class="bar-fill" style="width: 0%"></div>
+            </div>
+            <span>0 đánh giá</span>
+          </div>
+
+          <div class="rating-row">
+            <span>1 ⭐</span>
+            <div class="bar">
+              <div class="bar-fill" style="width: 0%"></div>
+            </div>
+            <span>0 đánh giá</span>
+          </div>
+        </div>
+      </div>
+      <!-- bộ lọc -->
+      <div class="filter-box">
+        <button class="filter active">Tất cả</button>
+        <button class="filter">5 ⭐</button>
+        <button class="filter">4 ⭐</button>
+        <button class="filter">3 ⭐</button>
+        <button class="filter">2 ⭐</button>
+        <button class="filter">1 ⭐</button>
+      </div>
+
+      <!-- Khu vực đánh giá -->
+      <div class="reviews-container">
+        <p class="no-review">Chưa có đánh giá nào</p>
+      </div>
+    </div>
+
+    <!--FORM VIẾT ĐÁNH GIÁ -->
+
+    <!-- Danh sách đánh giá -->
+    <div class="review-list"></div>
+
+    <!-- FORM ĐÁNH GIÁ -->
+    <div class="review-form-overlay">
+      <div class="review-form">
+        <div class="form-header">
+          <h3>Viết đánh giá</h3>
+          <span class="close-form">&times;</span>
+        </div>
+
+        <label>Chọn số sao:</label>
+        <div id="starSelect" class="star-box"></div>
+
+        <label>Nội dung đánh giá:</label>
+        <textarea
+          id="reviewContent"
+          placeholder="Hãy chia sẻ cảm nhận của bạn..."
+        ></textarea>
+
+        <button id="submitReviewBtn" class="submit-btn">Gửi đánh giá</button>
+      </div>
+    </div>
+
+    <!-- Hidden product ID -->
+    <input type="hidden" id="productId" value="<%= sanPham.maSanPham %>" />
+
+    <script src="/js/dashboard_kh.js"></script>
+    <script src="/js/review.js"></script>
+  </body>
+</html>

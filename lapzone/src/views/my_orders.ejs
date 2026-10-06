@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đơn hàng của tôi</title>
+    <link rel="stylesheet" href="/css/dashboard_kh.css" />
+    <link rel="stylesheet" href="/css/profile.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      /* Custom styles for My Orders page */
+      .container {
+        width: 70%;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          width: 95%;
+        }
+      }
+
+      .page-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .tabs {
+        display: flex;
+        background: #fff;
+        margin-bottom: 20px;
+        border-radius: 2px;
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .tab-item {
+        flex: 1;
+        text-align: center;
+        padding: 15px 0;
+        cursor: pointer;
+        font-size: 16px;
+        color: #333;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        transition: color 0.2s;
+      }
+
+      .tab-item:hover {
+        color: #ee4d2d;
+      }
+
+      .tab-item.active {
+        color: #ee4d2d;
+        border-bottom: 2px solid #ee4d2d;
+      }
+
+      .order-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .order-card {
+        background: #fff;
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+        border-radius: 2px;
+        padding: 20px;
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #888;
+      }
+
+      .order-status {
+        color: #ee4d2d;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+
+      .order-body {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        cursor: pointer;
+      }
+
+      .product-info {
+        flex: 1;
+      }
+
+      .product-name {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .product-meta {
+        font-size: 14px;
+        color: #888;
+      }
+
+      .order-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid #eaeaea;
+        gap: 15px;
+      }
+
+      .total-price {
+        font-size: 18px;
+        color: #ee4d2d;
+        font-weight: 500;
+      }
+
+      .total-label {
+        font-size: 14px;
+        color: #333;
+      }
+
+      .btn-detail {
+        background-color: #ee4d2d;
+        color: #fff;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 2px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      .btn-detail:hover {
+        background-color: #d73211;
+      }
+
+      .btn-cancel {
+        background-color: #fff;
+        color: #555;
+        border: 1px solid #eaeaea;
+        padding: 8px 20px;
+        border-radius: 2px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+        margin-right: 10px;
+      }
+
+      .btn-cancel:hover {
+        background-color: #f8f8f8;
+        border-color: #ccc;
+        color: #333;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 50px 0;
+        background: #fff;
+      }
+
+      .empty-state img {
+        width: 100px;
+        margin-bottom: 15px;
+      }
+
+      .main-content .container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    </style>
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+
+  <body>
+    <!-- Header (Reused from dashboard_kh) -->
+    <header class="header">
+      <div class="logo">
+            <a href="/kh/trangchu">
+                <h1>Lapzone</h1>
+            </a>
+        </div>
+
+        <div class="tk">
+            <form action="/search/resultSearch" method="get">
+            <i class="fa fa-search"></i>
+            <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+            </form>
+        </div>
+
+        <a href="/cart" class="header-cart-link">
+            <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+            <span style="color: white;">Giỏ hàng</span>
+        </a>
+
+        <div class="nguoidung">
+            <div class="user-box-click">
+            <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+            <span style="color: white;">
+                <%= khachHang ? khachHang.hoTen : "Đăng nhập" %>
+            </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="profile-wrapper" style="margin-top: 80px;">
+
+      <div class="sidebar">
+        <div class="user-badge">
+          <div class="user-avatar">
+            <i class="fa fa-user"></i>
+          </div>
+          <div class="user-info">
+            <span style="font-size: 13px; color: #888;">Tài khoản của</span><br>
+            <strong><%= khachHang.name %></strong>
+          </div>
+       </div>
+
+        <ul class="sidebar-menu">
+          <li>
+            <a href="/profile"><i class="fa fa-user"></i> Thông tin tài khoản</a>
+          </li>
+          <li class="active">
+            <a href="/order/my-orders"><i class="fa fa-shopping-bag"></i> Quản lý đơn hàng</a>
+          </li>
+          <li>
+            <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="main-content">
+        <div class="container">
+          <div class="tabs" style="border-radius: 10px 10px 0 0;">
+            <a
+            href="/order/my-orders?status=all"
+            class="tab-item <%= activeTab === 'all' ? 'active' : '' %>"
+            >Tất cả</a
+            >
+            <a
+            href="/order/my-orders?status=cho-giao-hang"
+            class="tab-item <%= activeTab === 'cho-giao-hang' ? 'active' : '' %>"
+            >Chờ giao hàng</a
+            >
+            <a
+            href="/order/my-orders?status=hoan-thanh"
+            class="tab-item <%= activeTab === 'hoan-thanh' ? 'active' : '' %>"
+            >Hoàn thành</a
+            >
+            <a
+            href="/order/my-orders?status=da-huy"
+            class="tab-item <%= activeTab === 'da-huy' ? 'active' : '' %>"
+            >Đã hủy</a
+            >
+          </div>
+
+          <div class="order-list">
+            <% if (orders && orders.length> 0) { %>
+              <% orders.forEach(function(order) { %>
+                <div class="order-card" style="border-radius: 10px;">
+                  <div class="order-header">
+                    <span>Mã đơn hàng: <%= order.maDonHang %></span>
+                    <span class="order-status"> <%= order.trangThai %> </span>
+                  </div>
+
+                  <% if (order.products && order.products.length> 0) { %>
+                    <% order.products.forEach(function(product) { %>
+                      <div
+                        class="order-body"
+                        onclick="window.location.href='/order/my-orders/<%= order.maDonHang %>'"
+                      >
+                        <div class="product-image">
+                          <img
+                            src="<%= product.hinhAnh %>"
+                            alt="<%= product.tenSanPham %>"
+                            style="
+                              width: 80px;
+                              height: 80px;
+                              object-fit: cover;
+                              margin-right: 15px;
+                              border: 1px solid #eaeaea;
+                            "
+                          />
+                        </div>
+                        <div class="product-info">
+                          <div class="product-name"><%= product.tenSanPham %></div>
+                          <div class="product-meta">x<%= product.soLuong %></div>
+                          <div class="product-price" style="color: #ee4d2d">
+                            <%= product.donGia ? Number(product.donGia).toLocaleString('vi-VN') : 0 %>đ
+                          </div>
+                        </div>
+                      </div>
+                    <% }); %>
+                  <% } else { %>
+                    <div class="order-body">
+                      <p>Không có thông tin sản phẩm</p>
+                    </div>
+                  <% } %>
+
+                  <div class="order-footer">
+                    <span class="total-label">Thành tiền:</span>
+                    <span class="total-price">
+                      <%= order.tongTien ? Number(order.tongTien).toLocaleString('vi-VN') : 0 %>đ
+                    </span>
+                    <%
+                      const allowedCancelStatuses = ['Chờ xử lý', 'Chờ xác nhận', 'Đã xác nhận'];
+                      if (order.trangThai && allowedCancelStatuses.includes(order.trangThai.trim())) {
+                    %>
+                      <button
+                        class="btn-cancel"
+                        onclick="cancelOrder('<%= order.maDonHang %>')"
+                      >
+                        Hủy đơn hàng
+                      </button>
+                    <% } %>
+                    <a href="/order/my-orders/<%= order.maDonHang %>" class="btn-detail" style="border-radius: 6px;">Xem chi tiết</a>
+
+                    <% if (order.trangThai && order.trangThai.trim() === 'Đã giao hàng')
+                    { %> <% order.products.forEach(function(product) { %>
+
+                      <a
+                      href="/product/review-product/<%= product.maSanPham %>"
+                      class="btn-detail btn-review"
+                      >
+                        Đánh giá
+                      </a>
+                    <% }) %>
+                  <% } %>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <div class="empty-state">
+              <img
+                src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/5fafbb923393b712b96488590b8f781f.png"
+                alt="No orders"
+              />
+              <p>Chưa có đơn hàng</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <script>
+      async function cancelOrder(maDonHang) {
+        if (!confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) return;
+
+        try {
+          const response = await fetch(`/order/cancel/${maDonHang}`, {
+            method: "POST",
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            alert("Hủy đơn hàng thành công");
+            window.location.reload();
+          } else {
+            alert(data.message || "Có lỗi xảy ra");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Lỗi kết nối server");
+        }
+      }
+    </script>
+
+    <script src="/js/dashboard_kh.js"></script>
+  </body>
+</html>

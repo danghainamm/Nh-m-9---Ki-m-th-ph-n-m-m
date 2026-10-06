@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <title><%= sanPham.tenSanPham %></title>
+    <link rel="stylesheet" href="/css/dashboard_kh.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/product.css" />
+    <link rel="stylesheet" href="/css/review.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+  <body>
+    <header class="header">
+      <div class="logo"><a href="/kh/trangchu">
+        <h1>Lapzone</h1>
+      </a></div>
+
+      <div class="tk">
+        <form action="/search/resultSearch" method="get">
+          <i class="fa fa-search"></i>
+          <input type="text" name="keyword" placeholder="Bạn muốn mua gì hôm nay?" />
+        </form>
+      </div>
+
+      <a href="/cart" class="header-cart-link">
+        <i class="fa fa-shopping-cart" id="cart" style="color: white;"></i>
+        <span style="color: white;">Giỏ hàng</span>
+      </a>
+
+      <div class="nguoidung">
+        <div class="user-box-click">
+          <i class="fa-regular fa-circle-user" style="color: white; font-size: 22px;"></i>
+          <span style="color: white;">
+            <%= khachHang ? khachHang.hoTen : "Đăng nhập" %>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <section class="product-page">
+      <div class="product-inner">
+        <div class="product-left">
+          <div class="main-image-wrap">
+            <img
+              src="<%= sanPham.anhMinhHoaSP %>"
+              alt="anhminhhoasp"
+              id="mainImage"
+            />
+          </div>
+
+          <div class="thumbs">
+            <% if (sanPham.anhMinhHoaSP) { %>
+            <img class="thumb" src="<%= sanPham.anhMinhHoaSP %>" alt="thumb1" />
+            <% } %> <% if (sanPham.anhMinhHoaSP) { %>
+            <img class="thumb" src="<%= sanPham.anhMinhHoaSP %>" alt="thumb2" />
+            <% } %> <% if (sanPham.anhMinhHoaSP) { %>
+            <img class="thumb" src="<%= sanPham.anhMinhHoaSP %>" alt="thumb3" />
+
+            <% } %>
+          </div>
+
+          <div class="features">
+            <h3>Đặc điểm nổi bật</h3>
+            <p><%= sanPham.moTa %></p>
+          </div>
+        </div>
+
+        <% if (sanPham.ram || sanPham.cpu || sanPham.hdh) { %>
+        <div class="product-right">
+          <div class="meta-row">
+            <h1 class="product-title"><%= sanPham.tenSanPham %></h1>
+            <div class="status">
+              <!-- <i class="fa fa-circle" aria-hidden="true"></i> -->
+              <span class="status-text" style="font-weight: bold;"><%= sanPham.tinhTrang %></span>
+              <!-- <p>Thương hiệu: <strong><%= sanPham.thuongHieu %></strong></p> -->
+
+            </div>
+          </div>
+
+
+          <div class="small-meta">
+
+            <span class="stock"><%= sanPham.kho %></span>
+          </div>
+
+          <div class="price-block">
+            <div class="price">
+              Giá bán:
+              <span class="price-value"><%= Number(sanPham.giaBan).toLocaleString('vi-VN') %></span>VND
+
+            </div>
+          </div>
+
+          <div class="actions">
+            <a
+              href="/order/dat-hang/<%= sanPham.maSanPham %>"
+              class="btn btn-primary buy"
+              >Mua ngay</a
+            >
+            <a
+              href="javascript:void(0);"
+              class="add-to-cart-btn"
+              onclick="promptForQuantity(event, '<%= sanPham.maSanPham %>')"
+            >
+              Thêm vào giỏ
+            </a>
+          </div>
+
+          <div class="specs">
+            <h2>Thông số kỹ thuật</h2>
+            <table cellspacing="0">
+              <% if (sanPham.ram) { %>
+              <tr>
+                <th>RAM</th>
+                <td><%= sanPham.ram %></td>
+              </tr>
+              <% } %> <% if (sanPham.rom) { %>
+              <tr>
+                <th>ROM</th>
+                <td><%= sanPham.rom %></td>
+              </tr>
+              <% } %> <% if (sanPham.cpu) { %>
+              <tr>
+                <th>CPU</th>
+                <td><%= sanPham.cpu %></td>
+              </tr>
+              <% } %> <% if (sanPham.cardDH) { %>
+              <tr>
+                <th>Card đồ họa</th>
+                <td><%= sanPham.cardDH %></td>
+              </tr>
+              <% } %> <% if (sanPham.soKheRam) { %>
+              <tr>
+                <th>Số khe RAM</th>
+                <td><%= sanPham.soKheRam %></td>
+              </tr>
+              <% } %> <% if (sanPham.kichThuocMH) { %>
+              <tr>
+                <th>Kích thước màn hình</th>
+                <td><%= sanPham.kichThuocMH %></td>
+              </tr>
+              <% } %> <% if (sanPham.pin) { %>
+              <tr>
+                <th>Pin</th>
+                <td><%= sanPham.pin %></td>
+              </tr>
+              <% } %> <% if (sanPham.hdh) { %>
+              <tr>
+                <th>Hệ điều hành</th>
+                <td><%= sanPham.hdh %></td>
+              </tr>
+              <% } %> <% if (sanPham.congNgheMH) { %>
+              <tr>
+                <th>Công nghệ màn hình</th>
+                <td><%= sanPham.congNgheMH %></td>
+              </tr>
+              <% } %> <% if (sanPham.doPhanGiaiMH) { %>
+              <tr>
+                <th>Độ phân giải màn hình</th>
+                <td><%= sanPham.doPhanGiaiMH %></td>
+              </tr>
+              <% } %> <% if (sanPham.port) { %>
+              <tr>
+                <th>Cổng kết nối</th>
+                <td><%= sanPham.port %></td>
+              </tr>
+              <% } %>
+            </table>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </section>
+    <!-- Modal nhập số lượng -->
+
+    <!--paste phần đánh vào đây-->
+
+    <!-- Hidden product ID -->
+    <input type="hidden" id="productId" value="<%= sanPham.maSanPham %>" />
+
+    <script src="/js/dashboard_kh.js"></script>
+    <script src="/js/review.js"></script>
+  </body>
+  <script>
+    function promptForQuantity(event, maSanPham) {
+      if (event) event.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+
+      const soLuong = 1;
+      console.log("Đang gửi yêu cầu thêm SP:", maSanPham);
+
+      fetch('/cart/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ maSanPham, soLuong }) })
+          .then(res => {
+              const contentType = res.headers.get("content-type");
+              if (contentType && contentType.indexOf("application/json") === -1) {
+                window.location.href = "/login";
+                return;
+              }
+              return res.json();
+          })
+          .then(data => {
+              console.log("Phản hồi từ server:", data);
+
+              if (!data) return;
+              if (data.success) {
+                  const Toast = Swal.mixin({
+                      toast: true,
+                      position: 'top',
+                      showConfirmButton: false,
+                      timer: 2500,
+                      timerProgressBar: true,
+                      background: '#4CAF50', // Màu xanh lá chuẩn
+                      color: '#ffffff'
+                  });
+
+                  Toast.fire({
+                      icon: 'success',
+                      iconColor: '#ffffff',
+                      title: 'Thêm vào giỏ hàng thành công'
+                  });
+              } else {
+                  // Hiện cảnh báo nếu hết hàng hoặc chưa đăng nhập
+                  Swal.fire({
+                      icon: 'warning',
+                      title: 'Thông báo',
+                      text: data.message,
+                      confirmButtonColor: '#d70018'
+                  });
+              }
+          })
+          .catch(err => {
+              console.error('Lỗi Fetch:', err);
+          });
+    }
+  </script>
+</html>
